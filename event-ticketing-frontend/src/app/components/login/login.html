@@ -1,6 +1,18 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Event Ticketing</h2>
+    <form (ngSubmit)="login()">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" [(ngModel)]="email" name="email" />
+      </mat-form-field>
 
-<form (ngSubmit)="login()">
-    <input type="email" [(ngModel)]="email" name="email" placeholder="Email" />
-    <input type="password" [(ngModel)]="password" name="password" placeholder="Password" />
-    <button type="submit">Login</button>
-</form>
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" [(ngModel)]="password" name="password" />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">Login</button>
+    </form>
+  </div>
+</div>
