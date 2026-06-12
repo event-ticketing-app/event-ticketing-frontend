@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Auth } from '../../services/auth'
+import { Auth } from '../../services/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -10,14 +11,16 @@ import { Auth } from '../../services/auth'
 })
 export class Login 
 {
-  constructor(private authService: Auth){}
+  constructor(private authService: Auth, private router: Router){}
 
   email: string = '';
   password: string = '';
 
   login(){
     this.authService.login(this.email, this.password).subscribe(response => {
-      console.log(response);
+      localStorage.setItem('token', response.token);
+      console.log('Token guardado', response.token);
+      this.router.navigate(['/events']);
     });
   }
 }
