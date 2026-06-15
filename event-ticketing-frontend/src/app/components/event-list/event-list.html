@@ -1,1 +1,13 @@
-<p>event-list works!</p>
+@for (event of events; track event.id) {
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ event.name }}</mat-card-title>
+      <mat-card-subtitle>{{ event.date | date:'dd/MM/yyyy' }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{ event.description }}</p>
+      <p>{{ event.price }}€</p>
+      <p>{{ event.ticketCapacity }} spots available</p>
+    </mat-card-content>
+  </mat-card>
+}
