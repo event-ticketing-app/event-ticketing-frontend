@@ -1,0 +1,11 @@
+@if (event) {
+  <div class="event-detail-container">
+    <img [src]="event.imageUrl" alt="{{ event.name }}" />
+    <h1>{{ event.name }}</h1>
+    <p>{{ event.description }}</p>
+    <p>{{ event.date | date:'dd/MM/yyyy' }}</p>
+    <p>{{ event.price }}€</p>
+    <p>{{ event.ticketCapacity }} spots available</p>
+    <button>Reserve ticket</button>
+  </div>
+}

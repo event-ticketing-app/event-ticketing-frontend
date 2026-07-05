@@ -4,27 +4,27 @@ import { Auth } from '../../services/auth';
 import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button'
+
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-register',
   imports: [FormsModule,MatFormFieldModule, MatInputModule, MatButtonModule],
-  templateUrl: './login.html',
-  styleUrl: './login.css',
-
-
+  templateUrl: './register.html',
+  styleUrl: './register.css',
 })
-export class Login 
+export class Register 
 {constructor(private authService: Auth, private router: Router){}
 
+  name: string = '';
   email: string = '';
   password: string = '';
 
-  login(){
-    this.authService.login(this.email, this.password).subscribe(response => {
+  register(){
+    this.authService.register(this.name, this.email, this.password).subscribe(response =>{
       localStorage.setItem('token', response.token);
-      console.log('Token guardado', response.token);
       this.router.navigate(['/events']);
-    });
+    })
   }
+
 }
