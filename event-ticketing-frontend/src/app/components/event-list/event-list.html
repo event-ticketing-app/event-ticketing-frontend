@@ -8,6 +8,7 @@
       <p>{{ event.description }}</p>
       <p>{{ event.price }}€</p>
       <p>{{ event.ticketCapacity }} spots available</p>
+      <button mat-raised-button [routerLink]="['/events', event.id]">View Details</button>
     </mat-card-content>
   </mat-card>
 }
