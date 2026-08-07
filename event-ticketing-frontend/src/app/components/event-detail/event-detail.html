@@ -1,15 +1,21 @@
 @if (event) {
+  <div class="hero-banner" [style.background-image]="'url(' + event.imageUrl + ')'">
+    <img [src]="event.imageUrl" alt="{{ event.name }}" class="hero-image" />
+  </div>
+
   <div class="event-detail-container">
-    <img [src]="event.imageUrl" alt="{{ event.name }}" />
     <h1>{{ event.name }}</h1>
     <p>{{ event.description }}</p>
     <p>{{ event.date | date:'dd/MM/yyyy' }}</p>
     <p>{{ event.price }}€</p>
-    <p>{{ event.ticketCapacity }} spots available</p>
-    <button mat-raised-button color="primary" (click)="reserve()">Reserve ticket</button>
+
+    <div class="event-footer">
+      <span class="spots">{{ event.ticketCapacity }} spots available</span>
+      <button mat-raised-button color="primary" (click)="reserve()">Reserve ticket</button>
+    </div>
 
     @if (reservationSuccess){
-      <p>Reservation success! You have 10 minutes to purchase the ticket.</p>
+      <p> Reservation success! You have 10 minutes to purchase the ticket.</p>
     }
   </div>
 }

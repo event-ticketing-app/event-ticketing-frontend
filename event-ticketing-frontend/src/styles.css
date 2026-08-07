@@ -30,3 +30,7 @@ mat-form-field {
 button {
   padding: 8px;
 }
+.mat-mdc-raised-button {
+  font-size: 1.1rem !important;
+  padding: 8px 24px !important;
+}
