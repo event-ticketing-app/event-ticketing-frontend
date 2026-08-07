@@ -6,6 +6,10 @@
     <p>{{ event.date | date:'dd/MM/yyyy' }}</p>
     <p>{{ event.price }}€</p>
     <p>{{ event.ticketCapacity }} spots available</p>
-    <button mat-raised-button color="primary">Reserve ticket</button>
+    <button mat-raised-button color="primary" (click)="reserve()">Reserve ticket</button>
+
+    @if (reservationSuccess){
+      <p>Reservation success! You have 10 minutes to purchase the ticket.</p>
+    }
   </div>
 }
