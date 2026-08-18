@@ -1,0 +1,14 @@
+
+@if (ticket) {
+  <div class="ticket-container">
+    <div class="ticket-card">
+      <h1> Your Ticket</h1>
+      <p><strong>Event:</strong> {{ ticket.eventName }}</p>
+      <p><strong>Description:</strong> {{ ticket.eventDescription }}</p>
+      <p><strong>Date:</strong> {{ ticket.eventDate | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Price:</strong> {{ ticket.price }}€</p>
+      <p><strong>Purchased at:</strong> {{ ticket.purchaseAt | date:'dd/MM/yyyy HH:mm' }}</p>
+      <p><strong>Status:</strong> Purchased </p>
+    </div>
+  </div>
+}

@@ -13,7 +13,22 @@ export interface TicketResponse{
 
 }
 
+export interface TicketReserveResponse{
+  id: number;
+  status: number;
+  price: number;
+  expiresAt: Date;
 
+}
+export interface TicketPurchaseResponse{
+  eventName: string;
+  eventDescription: string;
+  username: string;
+  status: number;
+  price: number;
+  eventDate: Date;
+  purchaseAt: Date;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -21,11 +36,12 @@ export interface TicketResponse{
 export class TicketService 
 {constructor(private http: HttpClient){}
   reserve(eventid: number){
-    return this.http.post<TicketResponse>(`${environment.apiUrl}/api/tickets/reserve`, { eventId: eventid})
+    return this.http.post<TicketReserveResponse>(`${environment.apiUrl}/api/tickets/reserve`, { eventId: eventid})
   }
   getTicket(id: number){
-    return this.http.get<TicketResponse[]>(`${environment.apiUrl}/api/purchase/${id}`)
+    return this.http.get<TicketPurchaseResponse>(`${environment.apiUrl}/api/tickets/${id}`)
   }
-
+  purchase(ticketid: number){
+    return this.http.post<TicketPurchaseResponse>(`${environment.apiUrl}/api/tickets/purchase/${ticketid}`, {})  }
 
 }

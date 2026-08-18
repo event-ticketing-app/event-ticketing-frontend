@@ -3,7 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { EventResponse, EventService } from '../../services/event';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { TicketResponse, TicketService } from '../../services/ticket';
+import { TicketPurchaseResponse, TicketReserveResponse, TicketService } from '../../services/ticket';
+import { Router } from '@angular/router';
 
 
 
@@ -17,11 +18,12 @@ import { TicketResponse, TicketService } from '../../services/ticket';
 
 
 export class EventDetail implements OnInit
-{constructor(private activatedRoute: ActivatedRoute, private eventService: EventService,@Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef, private ticketService: TicketService, ){}
+{constructor(private activatedRoute: ActivatedRoute, private eventService: EventService,@Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef, private ticketService: TicketService, private router: Router ){}
 
   event: EventResponse | null=null;
-  ticket: TicketResponse | null=null;
+  ticket: TicketReserveResponse | null=null;
   reservationSuccess = false;
+  purchasedTicket: TicketPurchaseResponse | null=null;
   
   ngOnInit(){
     if (!isPlatformBrowser(this.platformId)) return;
@@ -35,9 +37,15 @@ export class EventDetail implements OnInit
   reserve(){
     this.ticketService.reserve(this.event!.id).subscribe(response =>{
       this.reservationSuccess = true;
-
-
+      this.ticket = response;
+      this.cdr.detectChanges();
 
     })
+  }
+    purchase(){
+      this.ticketService.purchase(this.ticket!.id).subscribe(response => {
+        this.router.navigate(['/tickets', this.ticket!.id]);
+        this.cdr.detectChanges();
+      })
   }
 }
