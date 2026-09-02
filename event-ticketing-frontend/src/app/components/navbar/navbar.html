@@ -1,5 +1,5 @@
 <nav class="bg-red-600 flex justify-between items-center px-6 py-3">
-  <span class="text-white font-bold text-xl">EventTicketing</span>
+  <span class="text-white font-bold text-xl cursor-pointer" [routerLink]="['/events']">EventTicketing</span>
   
   <div class="flex gap-4 items-center">
 @if(!isLoggedIn()) {
@@ -10,7 +10,7 @@
 
 @if(isLoggedIn() && getRole() === 'User') {
   <!-- My tickets + Logout -->
-   <button mat-raised-button [routerLink]="['/tickets']">My Tickets</button>
+   <button mat-raised-button [routerLink]="['/my-tickets']">My Tickets</button>
    <button mat-raised-button (click)="logout()">Logout</button>
 }
 

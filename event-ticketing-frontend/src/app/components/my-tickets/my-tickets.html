@@ -1,0 +1,14 @@
+@for (ticket of tickets; track ticket.id) {
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ ticket.eventName }}</mat-card-title>
+      <mat-card-subtitle>{{ ticket.eventDate | date:'dd/MM/yyyy' }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{ ticket.eventDescription }}</p>
+      <p>{{ ticket.price }}€</p>
+      <p>Status: {{ ticket.status }}</p>
+      <button mat-raised-button color="primary" [routerLink]="['/tickets', ticket.id]">View ticket</button>
+    </mat-card-content>
+  </mat-card>
+}

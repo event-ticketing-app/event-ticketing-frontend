@@ -21,6 +21,7 @@ export interface TicketReserveResponse{
 
 }
 export interface TicketPurchaseResponse{
+  id: number;
   eventName: string;
   eventDescription: string;
   username: string;
@@ -42,6 +43,9 @@ export class TicketService
     return this.http.get<TicketPurchaseResponse>(`${environment.apiUrl}/api/tickets/${id}`)
   }
   purchase(ticketid: number){
-    return this.http.post<TicketPurchaseResponse>(`${environment.apiUrl}/api/tickets/purchase/${ticketid}`, {})  }
-
+    return this.http.post<TicketPurchaseResponse>(`${environment.apiUrl}/api/tickets/purchase/${ticketid}`, {})  
+  }
+  getMyTickets(){
+    return this.http.get<TicketPurchaseResponse[]>(`${environment.apiUrl}/api/tickets/my-tickets`)
+  }
 }
