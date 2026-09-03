@@ -13,6 +13,15 @@ export interface EventResponse {
   imageUrl: string;
 
 }
+export interface EventCreateRequest {
+  name: string;
+  description: string;
+  date: Date;
+  price: number;
+  imageUrl: string;
+  ticketCapacity: number;
+
+}
 
 @Injectable({
   providedIn: 'root',
@@ -27,5 +36,8 @@ export class EventService
   }
   getEventById(id: number){
     return this.http.get<EventResponse>(`${environment.apiUrl}/api/events/${id}`)
+  }
+  createEvent(event: EventCreateRequest){
+    return this.http.post<EventResponse>(`${environment.apiUrl}/api/events`, event)
   }
 }

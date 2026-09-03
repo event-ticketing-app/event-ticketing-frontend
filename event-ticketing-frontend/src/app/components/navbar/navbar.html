@@ -5,7 +5,7 @@
 @if(!isLoggedIn()) {
   <!-- Login + Create event -->
     <button mat-raised-button [routerLink]="['/login']">Login</button>
-    <button mat-raised-button [routerLink]="['/createevent']">Create Event</button>
+    <button mat-raised-button [routerLink]="['/create-event']">Create Event</button>
 }
 
 @if(isLoggedIn() && getRole() === 'User') {
@@ -17,6 +17,7 @@
 @if(isLoggedIn() && getRole() === 'Organizer') {
   <!-- My events + Create event + Logout -->
    <button mat-raised-button [routerLink]="['/organizer-events']">My Events</button>
+   <button mat-raised-button [routerLink]="['/create-event']">Create Event</button>
    <button mat-raised-button (click)="logout()">Logout</button>
 }
 
