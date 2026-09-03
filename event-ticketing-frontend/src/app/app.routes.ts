@@ -5,7 +5,9 @@ import { EventList } from './components/event-list/event-list';
 import { EventDetail } from './components/event-detail/event-detail';
 import { TicketDetail } from './components/ticket-detail/ticket-detail';
 import { MyTickets} from './components/my-tickets/my-tickets';
+import { OrganizerEvents} from './components/organizer-events/organizer-events';
 import { authGuard } from './guards/auth-guard';
+
 
 
 export const routes: Routes = [
@@ -14,5 +16,6 @@ export const routes: Routes = [
     { path: 'events', component: EventList},
     { path: 'events/:id', component: EventDetail},
     { path: 'tickets/:id', component: TicketDetail, canActivate: [authGuard]  },
-    { path: 'my-tickets', component: MyTickets, canActivate: [authGuard]  }
+    { path: 'my-tickets', component: MyTickets, canActivate: [authGuard]  },
+    { path: 'organizer-events', component: OrganizerEvents, canActivate: [authGuard] }
 ];

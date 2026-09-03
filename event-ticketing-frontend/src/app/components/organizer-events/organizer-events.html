@@ -1,0 +1,17 @@
+<div class="events-grid">
+  @for (event of events; track event.id) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ event.name }}</mat-card-title>
+        <mat-card-subtitle>{{ event.date | date:'dd/MM/yyyy' }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <img [src]="event.imageUrl" alt="{{ event.name }}" />
+        <p>{{ event.description }}</p>
+        <p>{{ event.price }}€</p>
+        <p>{{ event.ticketCapacity }} spots available</p>
+        <button mat-raised-button [routerLink]="['/events', event.id]">View Details</button>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

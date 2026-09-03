@@ -22,6 +22,9 @@ export class EventService
   getEvents(){
     return this.http.get<EventResponse[]>(`${environment.apiUrl}/api/events`);
   }
+  getMyEvents(){
+    return this.http.get<EventResponse[]>(`${environment.apiUrl}/api/events/my-events`);
+  }
   getEventById(id: number){
     return this.http.get<EventResponse>(`${environment.apiUrl}/api/events/${id}`)
   }

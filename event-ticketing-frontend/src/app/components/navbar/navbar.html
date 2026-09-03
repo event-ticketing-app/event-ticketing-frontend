@@ -16,7 +16,7 @@
 
 @if(isLoggedIn() && getRole() === 'Organizer') {
   <!-- My events + Create event + Logout -->
-   <button mat-raised-button [routerLink]="['/organizerevents']">My Events</button>
+   <button mat-raised-button [routerLink]="['/organizer-events']">My Events</button>
    <button mat-raised-button (click)="logout()">Logout</button>
 }
 
