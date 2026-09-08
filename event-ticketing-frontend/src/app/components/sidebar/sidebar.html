@@ -1,0 +1,23 @@
+<div class="flex flex-col h-full bg-gray-50 w-64">
+  
+    <div class="py-6 px-6 border-b border-gray-200">
+    <h2 class="text-xl font-bold text-red-600">EventTicketing</h2>
+    </div>
+
+  <nav class="flex-1 px-4 py-6 flex flex-col gap-2">
+    <a [routerLink]="['/organizer-events']" 
+       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-red-600 font-medium transition-colors border border-gray-200">
+      Mis eventos
+    </a>
+    <a [routerLink]="['/create-event']" 
+       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-red-600 font-medium transition-colors border border-gray-200">
+      Crear evento
+    </a>
+  </nav>
+
+  <div class="px-6 py-4 border-t border-gray-200 text-center">
+    <p class="text-gray-400 text-xs">Aviso legal · Privacidad</p>
+    <p class="text-gray-400 text-xs mt-1">© 2026 EventTicketing</p>
+  </div>
+
+</div>

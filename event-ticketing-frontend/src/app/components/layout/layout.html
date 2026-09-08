@@ -1,1 +1,9 @@
-<p>layout works!</p>
+<mat-sidenav-container>
+  <mat-sidenav mode="over" position="start" [opened]="isSidebarOpen()">
+    <app-sidebar />
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <app-navbar />
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

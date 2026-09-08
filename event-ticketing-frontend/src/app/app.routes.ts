@@ -9,12 +9,13 @@ import { OrganizerEvents} from './components/organizer-events/organizer-events';
 import { CreateEvent} from './components/create-event/create-event';
 import { authGuard } from './guards/auth-guard';
 import { organizerGuard } from './guards/organizer-guard';
+import { guestGuard } from './guards/guest-guard';
 
 
 
 export const routes: Routes = [
-    { path: 'login', component: Login},
-    { path: 'register', component: Register},
+    { path: 'login', component: Login, canActivate: [guestGuard] },
+    { path: 'register', component: Register, canActivate: [guestGuard] },
     { path: 'events', component: EventList},
     { path: 'events/:id', component: EventDetail},
     { path: 'tickets/:id', component: TicketDetail, canActivate: [authGuard]  },
