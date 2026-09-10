@@ -45,5 +45,5 @@ openLogin(){
     panelClass: 'no-scroll-dialog',
     data: { isOrganizer: true }
   });
-}
+  } 
 }
