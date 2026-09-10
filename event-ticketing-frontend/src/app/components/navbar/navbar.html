@@ -12,12 +12,12 @@
 
   <div class="flex gap-4 items-center">
     @if(!isLoggedIn()) {
-      <button mat-raised-button [routerLink]="['/login']">Accede</button>
-      <button mat-raised-button [routerLink]="['/create-event']">Crea tu evento</button>
+      <button mat-raised-button (click)="openLogin()">Access</button>
+      <button mat-raised-button (click)="openOrganizerLogin()">Create Event</button>
     }
 
     @if(isLoggedIn() && getRole() === 'User') {
-      <button mat-raised-button [routerLink]="['/my-tickets']">Mis tickets</button>
+      <button mat-raised-button [routerLink]="['/my-tickets']">My tickets</button>
     }
 
     @if(isLoggedIn()) {
@@ -25,7 +25,7 @@
         <mat-icon class="text-white">account_circle</mat-icon>
       </button>
       <mat-menu #profileMenu="matMenu">
-        <button mat-menu-item>Mi perfil</button>
+        <button mat-menu-item>My account</button>
         <button mat-menu-item (click)="logout()">Logout</button>
       </mat-menu>
     }

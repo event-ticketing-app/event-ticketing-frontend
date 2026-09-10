@@ -1,5 +1,4 @@
-@tailwind base;
-@tailwind components;
+
 @tailwind utilities;
 
 .auth-container {
@@ -37,4 +36,7 @@ button {
 .mat-mdc-raised-button {
   font-size: 1.1rem !important;
   padding: 8px 24px !important;
+}
+.no-scroll-dialog mat-dialog-content {
+  overflow: hidden;
 }
