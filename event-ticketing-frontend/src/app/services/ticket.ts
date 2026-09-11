@@ -29,6 +29,7 @@ export interface TicketPurchaseResponse{
   price: number;
   eventDate: Date;
   purchaseAt: Date;
+  imageUrl: string;
 }
 
 @Injectable({
@@ -47,5 +48,8 @@ export class TicketService
   }
   getMyTickets(){
     return this.http.get<TicketPurchaseResponse[]>(`${environment.apiUrl}/api/tickets/my-tickets`)
+  }
+  cancelTicket(ticketid: number){
+    return this.http.post(`${environment.apiUrl}/api/tickets/cancel/${ticketid}`, {})
   }
 }

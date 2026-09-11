@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { Search } from '../../services/search';
 
 @Component({
   selector: 'app-event-list',
@@ -18,7 +19,12 @@ import { MatButtonModule } from '@angular/material/button';
 export class EventList  implements OnInit
 {
   events: EventResponse[] = [];
-  constructor(private eventService: EventService,@Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef){}
+  get filteredEvents() {
+    return this.events.filter(e => 
+      e.name.toLowerCase().includes(this.searchService.getSearchTerm().toLowerCase())
+    );
+  }
+  constructor(private eventService: EventService,@Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef, private searchService: Search){}
   ngOnInit(){
     if (!isPlatformBrowser(this.platformId)) return;
      this.eventService.getEvents().subscribe(response => { 

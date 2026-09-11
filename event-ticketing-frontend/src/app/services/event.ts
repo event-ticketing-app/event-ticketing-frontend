@@ -40,4 +40,7 @@ export class EventService
   createEvent(event: EventCreateRequest){
     return this.http.post<EventResponse>(`${environment.apiUrl}/api/events`, event)
   }
+  putEvent(id: number, event: EventCreateRequest){
+    return this.http.put<EventResponse>(`${environment.apiUrl}/api/events/${id}`, event)
+  }
 }

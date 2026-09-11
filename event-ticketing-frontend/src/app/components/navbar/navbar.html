@@ -11,6 +11,28 @@
   }
 
   <div class="flex gap-4 items-center">
+
+    @if(showSearch) {
+      <div class="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 w-64 transition-all duration-300">
+        <mat-icon class="text-white/70 text-sm scale-75">search</mat-icon>
+          <input 
+            type="text"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch($event)"
+            placeholder="Search events..."
+            class="search-input"
+            autofocus
+          />
+        <button mat-icon-button (click)="toggleSearch()" class="scale-75">
+          <mat-icon class="text-white/70">close</mat-icon>
+        </button>
+      </div>
+    } @else {
+      <button mat-icon-button (click)="toggleSearch()">
+        <mat-icon class="text-white">search</mat-icon>
+      </button>
+    }
+
     @if(!isLoggedIn()) {
       <button mat-raised-button (click)="openLogin()">Access</button>
       <button mat-raised-button (click)="openOrganizerLogin()">Create Event</button>

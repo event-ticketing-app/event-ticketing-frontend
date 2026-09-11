@@ -1,14 +1,43 @@
-
 @if (ticket) {
-  <div class="ticket-container">
-    <div class="ticket-card">
-      <h1> Your Ticket</h1>
-      <p><strong>Event:</strong> {{ ticket.eventName }}</p>
-      <p><strong>Description:</strong> {{ ticket.eventDescription }}</p>
-      <p><strong>Date:</strong> {{ ticket.eventDate | date:'dd/MM/yyyy' }}</p>
-      <p><strong>Price:</strong> {{ ticket.price }}€</p>
-      <p><strong>Purchased at:</strong> {{ ticket.purchaseAt | date:'dd/MM/yyyy HH:mm' }}</p>
-      <p><strong>Status:</strong> Purchased </p>
+  <div style="display: flex; justify-content: center; padding: 40px 16px;">
+    <div style="max-width: 800px; width: 80vw; background: #f9fafb; border-radius: 12px; border: 0.5px solid #e5e7eb; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden;">      
+      <img [src]="ticket.imageUrl" alt="{{ ticket.eventName }}" style="width: 100%; height: 180px; object-fit: cover;" />
+
+      <div style="background: #dc2626; padding: 24px; color: white;">
+        <p style="margin: 0; font-size: 11px; letter-spacing: 2px; opacity: 0.8;">EVENT TICKET</p>
+        <p style="margin: 8px 0 0; font-size: 24px; font-weight: 500;">{{ ticket.eventName }}</p>
+        <p style="margin: 4px 0 0; font-size: 13px; opacity: 0.8;">{{ ticket.eventDescription }}</p>
+      </div>
+
+      <div style="padding: 20px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+          <div>
+            <p style="margin: 0; font-size: 11px; color: var(--text-muted); letter-spacing: 1px;">DATE</p>
+            <p style="margin: 4px 0 0; font-size: 14px; font-weight: 500; color: var(--text-primary);">{{ ticket.eventDate | date:'dd/MM/yyyy' }}</p>
+          </div>
+          <div style="text-align: right;">
+            <p style="margin: 0; font-size: 11px; color: var(--text-muted); letter-spacing: 1px;">PRICE</p>
+            <p style="margin: 4px 0 0; font-size: 14px; font-weight: 500; color: var(--text-primary);">{{ ticket.price }}€</p>
+          </div>
+        </div>
+
+        <div>
+          <p style="margin: 0; font-size: 11px; color: var(--text-muted); letter-spacing: 1px;">ATTENDEE</p>
+          <p style="margin: 4px 0 0; font-size: 14px; font-weight: 500; color: var(--text-primary);">{{ ticket.username }}</p>
+        </div>
+      </div>
+
+      <div style="border-top: 2px dashed #e5e7eb; margin: 0 20px;"></div>
+
+      <div style="padding: 20px;">
+        <div style="display: flex; justify-content: center; gap: 2px; margin-bottom: 12px;">
+          @for(bar of barcode; track $index) {
+            <div [style.width]="bar + 'px'" style="height: 48px; background: #1f2937;"></div>
+          }
+        </div>
+        <p style="text-align: center; font-size: 11px; color: #9ca3af; margin: 0; letter-spacing: 1px;">PURCHASED ✓</p>
+      </div>
+
     </div>
   </div>
 }

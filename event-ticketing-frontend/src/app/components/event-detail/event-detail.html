@@ -11,21 +11,26 @@
 
     <div class="event-footer">
       <span class="spots">{{ event.ticketCapacity }} spots available</span>
-      @if (!reservationSuccess) {
-        <button mat-raised-button color="primary" (click)="reserve()">Reserve ticket</button>
-      }
-      @if (reservationSuccess && !purchasedTicket) {
-        <button mat-raised-button color="accent" (click)="purchase()">Purchase ticket</button>
+      
+      @if (getRole() === 'Organizer' || getRole() === 'Admin') {
+        <button mat-raised-button [routerLink]="['/edit-event', event.id]">Edit event</button>
+      } @else {
+        @if (!reservationSuccess) {
+          <button mat-raised-button color="primary" (click)="reserve()">Reserve ticket</button>
+        }
+        @if (reservationSuccess && !purchasedTicket) {
+          <button mat-raised-button color="accent" (click)="purchase()">Purchase ticket</button>
+        }
       }
     </div>
 
     @if (reservationSuccess && !purchasedTicket) {
-      <p> Reservation success! You have 10 minutes to purchase the ticket.</p>
+      <p>Reservation success! You have 10 minutes to purchase the ticket.</p>
     }
 
     @if (purchasedTicket) {
       <div class="purchased-ticket">
-        <h2> Ticket confirmed!</h2>
+        <h2>Ticket confirmed!</h2>
         <p><strong>Event:</strong> {{ purchasedTicket.eventName }}</p>
         <p><strong>Date:</strong> {{ purchasedTicket.eventDate | date:'dd/MM/yyyy' }}</p>
         <p><strong>Price:</strong> {{ purchasedTicket.price }}€</p>

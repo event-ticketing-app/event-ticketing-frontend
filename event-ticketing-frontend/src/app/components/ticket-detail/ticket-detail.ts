@@ -14,6 +14,7 @@ import { DatePipe, isPlatformBrowser } from '@angular/common';
 export class TicketDetail implements OnInit
 {constructor(private activatedRoute: ActivatedRoute, private ticketService: TicketService, @Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef){}
   ticket: TicketPurchaseResponse | null = null
+  barcode: number[] = Array.from({length: 30}, () => Math.random() > 0.5 ? 3 : 1);
   
   ngOnInit(){
     if (!isPlatformBrowser(this.platformId)) return;

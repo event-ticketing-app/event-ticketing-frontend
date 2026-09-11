@@ -1,5 +1,5 @@
 <div class="events-grid">
-  @for (event of events; track event.id) {
+  @for (event of filteredEvents; track event.id) {
     <mat-card>
       <mat-card-header>
         <mat-card-title>{{ event.name }}</mat-card-title>

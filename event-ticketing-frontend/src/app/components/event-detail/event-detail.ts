@@ -6,12 +6,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { TicketPurchaseResponse, TicketReserveResponse, TicketService } from '../../services/ticket';
 import { Router } from '@angular/router';
 import { Auth } from '../../services/auth';
+import { RouterLink } from '@angular/router';
 
 
 
 @Component({
   selector: 'app-event-detail',
-  imports: [DatePipe,MatButtonModule],
+  imports: [DatePipe,MatButtonModule, RouterLink],
   templateUrl: './event-detail.html',
   styleUrl: './event-detail.css',
 })
@@ -47,10 +48,13 @@ export class EventDetail implements OnInit
 
     })
   }
-    purchase(){
-      this.ticketService.purchase(this.ticket!.id).subscribe(response => {
-        this.router.navigate(['/tickets', this.ticket!.id]);
-        this.cdr.detectChanges();
-      })
+  purchase(){
+    this.ticketService.purchase(this.ticket!.id).subscribe(response => {
+      this.router.navigate(['/tickets', this.ticket!.id]);
+      this.cdr.detectChanges();
+    })
+  }
+  getRole(): string | null {
+    return this.auth.getRole();
   }
 }

@@ -40,3 +40,11 @@ button {
 .no-scroll-dialog mat-dialog-content {
   overflow: hidden;
 }
+img {
+  height: 250px !important;
+  object-fit: cover !important;
+}
+mat-sidenav {
+  background: transparent !important;
+  border: none !important;
+}
