@@ -31,19 +31,13 @@ export class Navbar {
   toggleSidebar(){
   this.sidebarService.toggle();
   }
-openLogin(){
-  this.dialog.open(LoginModal, {
-    width: '500px',
-    panelClass: 'no-scroll-dialog',
-    data: { isOrganizer: false }
-  });
-
+  openLogin(){
+    const ref = this.dialog.open(LoginModal, { width: '500px' });
+    ref.componentInstance.isOrganizer = false;
   }
+
   openOrganizerLogin(){
-  this.dialog.open(LoginModal, {
-    width: '500px',
-    panelClass: 'no-scroll-dialog',
-    data: { isOrganizer: true }
-  });
-  } 
+    const ref = this.dialog.open(LoginModal, { width: '500px' });
+    ref.componentInstance.isOrganizer = true;
+  }
 }

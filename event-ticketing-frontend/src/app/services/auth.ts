@@ -21,9 +21,10 @@ export class Auth
     login(email: string, password: string){
       return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/login`, { email, password});
     }
-    register(name: string, email: string, password: string){
-      return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/register`, {name, email, password });
-    }
+  register(name: string, email: string, password: string, role: string = 'User'){
+    const roleValue = role === 'Organizer' ? 1 : 0;
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/register`, {name, email, password, role: roleValue});
+  }
   
   isLoggedIn(): boolean{
     if (!isPlatformBrowser(this.platformId)) return false;
