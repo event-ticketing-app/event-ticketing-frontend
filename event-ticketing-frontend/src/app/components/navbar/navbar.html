@@ -1,4 +1,4 @@
-<nav class="bg-red-600 flex justify-between items-center px-6 py-3">
+<nav [ngClass]="getRole() === 'Admin' ? 'bg-blue-700' : 'bg-red-600'" class="flex justify-between items-center px-6 py-3">
   
   @if(getRole() !== 'Organizer' && getRole() !== 'Admin') {
     <span class="text-white font-bold text-xl cursor-pointer" [routerLink]="['/events']">EventTicketing</span>

@@ -1,6 +1,6 @@
 <mat-sidenav-container>
   <mat-sidenav mode="over" position="start" [opened]="isSidebarOpen()">
-    <app-sidebar />
+    <app-sidebar [role]="getRole() ?? 'Organizer'" />
   </mat-sidenav>
   <mat-sidenav-content>
     <app-navbar />

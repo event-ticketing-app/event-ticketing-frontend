@@ -1,1 +1,23 @@
-<p>admin works!</p>
+<div class="p-8">
+  <h1 class="text-2xl font-bold text-gray-900 mb-2">Dashboard</h1>
+  <p class="text-gray-500 text-sm mb-8">Platform metrics overview.</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Users</p>
+      <p class="text-4xl font-bold text-gray-900">{{ totalUsers }}</p>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Events</p>
+      <p class="text-4xl font-bold text-gray-900">{{ totalEvents }}</p>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Tickets</p>
+      <p class="text-4xl font-bold text-gray-900">{{ totalTickets }}</p>
+    </div>
+
+  </div>
+</div>

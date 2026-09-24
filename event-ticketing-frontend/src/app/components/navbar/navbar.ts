@@ -9,13 +9,14 @@ import { SidebarService } from '../../services/sidebar';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { LoginModal } from '../login-modal/login-modal';
 import {Search} from '../../services/search';
+import { NgClass } from '@angular/common';
 
 
 
 
 @Component({
   selector: 'app-navbar',
-  imports: [FormsModule, MatButtonModule, RouterLink, MatMenuModule, MatIconModule, MatDialogModule],
+  imports: [FormsModule, MatButtonModule, RouterLink, MatMenuModule, MatIconModule, MatDialogModule, NgClass],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })

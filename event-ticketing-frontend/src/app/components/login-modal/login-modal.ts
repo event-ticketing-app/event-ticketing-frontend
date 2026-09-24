@@ -30,7 +30,12 @@ export class LoginModal {
     this.authService.login(this.email, this.password).subscribe(response => {
       localStorage.setItem('token', response.token);
       this.dialogRef.close();
-      this.router.navigate(['/events']);
+      const role = this.authService.getRole();
+      if (role === 'Admin') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/events']);
+      }
     });
   }
 }

@@ -20,6 +20,7 @@ export class Auth
   {constructor(private http: HttpClient,@Inject(PLATFORM_ID) private platformId: Object,private router: Router) {}
     login(email: string, password: string){
       return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/login`, { email, password});
+        
     }
   register(name: string, email: string, password: string, role: string = 'User'){
     const roleValue = role === 'Organizer' ? 1 : 0;
