@@ -14,6 +14,7 @@ import { organizerGuard } from './guards/organizer-guard';
 import { guestGuard } from './guards/guest-guard';
 import { adminGuard } from './guards/admin-guard';
 import {AdminUsers} from './components/admin-users/admin-users';
+import {AdminEvents} from './components/admin-events/admin-events';
 
 
 export const routes: Routes = [
@@ -27,5 +28,7 @@ export const routes: Routes = [
     { path: 'create-event', component: CreateEvent, canActivate: [organizerGuard] },
     { path: 'edit-event/:id', component: EditEvent, canActivate: [organizerGuard] },
     { path: 'admin', component: Admin, canActivate: [adminGuard] },
-    { path: 'admin/users', component: AdminUsers, canActivate: [adminGuard] }
+    { path: 'admin/users', component: AdminUsers, canActivate: [adminGuard] },
+    { path: 'admin/events', component: AdminEvents, canActivate: [adminGuard] }
+
 ];

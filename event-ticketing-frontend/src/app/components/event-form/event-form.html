@@ -1,0 +1,52 @@
+<div class="p-6">
+  <form (ngSubmit)="submit()" class="flex flex-col gap-4">
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="name" name="name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput [(ngModel)]="description" name="description" rows="4" required></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="date" name="date" required />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Price</mat-label>
+      <input matInput type="number" [(ngModel)]="price" name="price" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Ticket Capacity</mat-label>
+      <input matInput type="number" [(ngModel)]="ticketCapacity" name="ticketCapacity" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Image URL</mat-label>
+      <input matInput [(ngModel)]="imageUrl" name="imageUrl" required />
+    </mat-form-field>
+
+    @if (!event) {
+      <mat-form-field appearance="outline">
+        <mat-label>Organizer</mat-label>
+        <mat-select [(ngModel)]="organizerId" name="organizerId" required>
+          @for (organizer of organizers; track organizer.id) {
+            <mat-option [value]="organizer.id">{{ organizer.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+
+    <button mat-raised-button color="primary" type="submit">
+      {{ event ? 'Save Changes' : 'Create Event' }}
+    </button>
+
+  </form>
+</div>
