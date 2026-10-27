@@ -20,12 +20,12 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Price</mat-label>
-      <input matInput type="number" [(ngModel)]="price" name="price" required />
+      <input matInput type="number" min="1" [(ngModel)]="price" name="price" required />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Ticket Capacity</mat-label>
-      <input matInput type="number" [(ngModel)]="ticketCapacity" name="ticketCapacity" required />
+      <input matInput type="number" min="1" [(ngModel)]="ticketCapacity" name="ticketCapacity" required />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
