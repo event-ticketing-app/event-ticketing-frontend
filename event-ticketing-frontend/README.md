@@ -1,59 +1,70 @@
 # EventTicketingFrontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.13.
+Angular 21 SSR frontend for the Event Ticketing platform. Connects to the .NET 8 backend API.
 
-## Development server
+## Tech Stack
 
-To start a local development server, run:
+- Angular 21 (SSR)
+- Angular Material
+- Tailwind CSS
+- JWT authentication
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- Angular CLI: `npm install -g @angular/cli`
+- Backend running at `http://localhost:5000`
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Run development server
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open `http://localhost:4200` in your browser.
 
-## Code scaffolding
+## Project Structure
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+src/
+  app/
+    components/   # Feature components (admin-users, admin-events, admin-tickets...)
+    services/     # HTTP services (auth, admin-users, admin-events, admin-tickets...)
+    guards/       # Route guards (authGuard, adminGuard, guestGuard)
+  environments/   # API URL config per environment
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Available Routes
 
-```bash
-ng generate --help
-```
+| Route | Access | Description |
+|---|---|---|
+| `/events` | Public | Event listing |
+| `/events/:id` | Public | Event detail |
+| `/login` | Guest only | Login |
+| `/register` | Guest only | Register |
+| `/admin` | Admin | Dashboard |
+| `/admin/users` | Admin | User management |
+| `/admin/events` | Admin | Event management |
+| `/admin/tickets` | Admin | Ticket management |
 
-## Building
-
-To build the project run:
+## Build
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Build artifacts are output to the `dist/` directory.
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Testing
 
 ```bash
 ng test
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
