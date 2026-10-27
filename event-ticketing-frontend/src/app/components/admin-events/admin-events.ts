@@ -5,6 +5,7 @@ import { isPlatformBrowser} from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { EventForm } from '../event-form/event-form';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-events',
@@ -27,6 +28,7 @@ export class AdminEvents implements OnInit {
     private cdr: ChangeDetectorRef,
     private searchService: Search,
     private dialog: MatDialog,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -71,5 +73,9 @@ export class AdminEvents implements OnInit {
     this.adminService.deleteEvent(id).subscribe(() => {
       this.loadEvents();
     });
+  }
+
+  viewEventDetails(id: number) {
+    this.router.navigate(['/events', id]);
   }
 }

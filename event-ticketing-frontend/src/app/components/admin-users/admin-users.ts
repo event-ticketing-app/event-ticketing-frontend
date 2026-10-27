@@ -72,4 +72,8 @@ export class AdminUsers implements OnInit
         this.loadUsers();
       });
     }
+
+    viewUserDetails(user: AdminUserResponse) {
+      this.openEditUser(user);
+    }
 }
