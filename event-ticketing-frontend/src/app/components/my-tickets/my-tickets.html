@@ -3,9 +3,9 @@
     <mat-label>Filter by status</mat-label>
     <mat-select [(ngModel)]="selectedStatus">
       <mat-option [value]="null">All</mat-option>
-      <mat-option [value]="0">Reserved</mat-option>
-      <mat-option [value]="1">Cancelled</mat-option>
-      <mat-option [value]="2">Purchased</mat-option>
+      @for (option of statusOptions; track option.value) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+      }
     </mat-select>
   </mat-form-field>
 
@@ -19,9 +19,9 @@
         <mat-card-content>
           <p>{{ ticket.eventDescription }}</p>
           <p>{{ ticket.price }}€</p>
-          <p>Status: {{ getStatusLabel(ticket.status) }}</p>
+          <p>Status: <span class="inline-flex px-2.5 py-0.5 rounded-full border text-xs font-semibold" [class]="statusClasses(ticket.status)">{{ getStatusLabel(ticket.status) }}</span></p>
           <button mat-raised-button color="primary" [routerLink]="['/tickets', ticket.id]">View ticket</button>
-          @if(ticket.status === 0) {
+          @if(canCancel(ticket.status)) {
             <button mat-raised-button color="warn" (click)="cancel(ticket.id, ticket.eventName)">Cancel</button>
           }
         </mat-card-content>

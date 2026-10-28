@@ -7,7 +7,7 @@ export interface AdminTicketResponse {
   eventName: string;
   eventDescription: string;
   userName: string;
-  status: string;
+  status: number;
   price: number;
   eventDate: string;
   purchaseDate: string;

@@ -20,11 +20,13 @@
 					<tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
 						<td class="px-6 py-4 text-sm text-gray-900">{{ ticket.eventName }}</td>
 						<td class="px-6 py-4 text-sm text-gray-500">{{ ticket.userName }}</td>
-						<td class="px-6 py-4 text-sm text-gray-500">{{ ticket.status }}</td>
+						<td class="px-6 py-4 text-sm">
+							<span class="inline-flex px-2.5 py-0.5 rounded-full border text-xs font-semibold" [class]="statusClasses(ticket.status)">{{ statusLabel(ticket.status) }}</span>
+						</td>
 						<td class="px-6 py-4 text-sm text-gray-500">{{ ticket.price }}</td>
-						<td class="px-6 py-4 text-sm text-gray-500">{{ ticket.purchaseDate }}</td>
+						<td class="px-6 py-4 text-sm text-gray-500">{{ ticket.purchaseDate | displayDate }}</td>
 						<td class="px-6 py-4 flex gap-2">
-							@if (ticket.status !== 'Cancelled') {
+							@if (canCancel(ticket.status)) {
 								<button mat-raised-button color="primary" (click)="cancelTicket(ticket.id, ticket.eventName)">Cancel</button>
 							}
 							<button mat-raised-button color="warn" (click)="deleteTicket(ticket.id, ticket.eventName)">Delete</button>

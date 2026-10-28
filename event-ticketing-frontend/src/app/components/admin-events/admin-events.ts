@@ -3,6 +3,7 @@ import { AdminEventsService, AdminEventResponse } from '../../services/admin-eve
 import { Search } from '../../services/search';
 import { isPlatformBrowser} from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { DisplayDatePipe } from '../../pipes/display-date.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { EventForm } from '../event-form/event-form';
 import { ConfirmService } from '../../services/confirm';
@@ -10,7 +11,7 @@ import { AdminEventDetails } from '../admin-event-details/admin-event-details';
 
 @Component({
   selector: 'app-admin-events',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, DisplayDatePipe],
   templateUrl: './admin-events.html',
   styleUrl: './admin-events.css',
 })

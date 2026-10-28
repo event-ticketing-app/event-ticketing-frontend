@@ -8,6 +8,7 @@ import { TicketPurchaseResponse } from '../../services/ticket';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { ConfirmService } from '../../services/confirm';
+import { TICKET_STATUS_OPTIONS, canCancelTicket, getTicketStatusClasses, getTicketStatusLabel } from '../../services/ticket-status';
 
 @Component({
   selector: 'app-my-tickets',
@@ -25,6 +26,9 @@ export class MyTickets implements OnInit
   tickets: TicketPurchaseResponse[] = [];
   constructor(private ticketService: TicketService,@Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef, private confirm: ConfirmService){}
   selectedStatus: number | null = null;
+  readonly statusOptions = TICKET_STATUS_OPTIONS;
+  readonly statusClasses = getTicketStatusClasses;
+  readonly canCancel = canCancelTicket;
 
   get filteredTickets() {
     if (this.selectedStatus === null) return this.tickets;
@@ -54,11 +58,6 @@ export class MyTickets implements OnInit
     });
   }
   getStatusLabel(status: number): string {
-    switch(status) {
-      case 0: return 'Reserved';
-      case 1: return 'Cancelled';
-      case 2: return 'Purchased';
-      default: return 'Unknown';
-    }
+    return getTicketStatusLabel(status);
   }
 }

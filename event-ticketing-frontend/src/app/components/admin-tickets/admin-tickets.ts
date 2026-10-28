@@ -1,18 +1,24 @@
 import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { DisplayDatePipe } from '../../pipes/display-date.pipe';
 import { AdminTicketsService, AdminTicketResponse } from '../../services/admin-tickets';
 import { Search } from '../../services/search';
 import { ConfirmService } from '../../services/confirm';
+import { canCancelTicket, getTicketStatusClasses, getTicketStatusLabel } from '../../services/ticket-status';
 
 @Component({
   selector: 'app-admin-tickets',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, DisplayDatePipe],
   templateUrl: './admin-tickets.html',
   styleUrl: './admin-tickets.css',
 })
 export class AdminTickets implements OnInit {
   tickets: AdminTicketResponse[] = [];
+
+  readonly statusLabel = getTicketStatusLabel;
+  readonly statusClasses = getTicketStatusClasses;
+  readonly canCancel = canCancelTicket;
 
   get filteredTickets() {
     return this.tickets.filter(t =>
