@@ -30,7 +30,7 @@ export class Register
   }
   register(){
     this.authService.register(this.name, this.email, this.password, this.role).subscribe(response =>{
-      localStorage.setItem('token', response.token);
+      this.authService.setToken(response.token);
       this.router.navigate(['/events']);
     })
   }

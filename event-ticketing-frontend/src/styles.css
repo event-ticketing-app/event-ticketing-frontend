@@ -1,5 +1,19 @@
 
+@tailwind base;
 @tailwind utilities;
+
+/* Width includes padding and border, so w-full elements never overflow the screen */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background-color: #020617;
+  overflow-x: hidden;
+}
 
 .auth-container {
   display: flex;

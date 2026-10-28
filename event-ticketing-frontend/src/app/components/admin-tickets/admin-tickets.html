@@ -25,9 +25,9 @@
 						<td class="px-6 py-4 text-sm text-gray-500">{{ ticket.purchaseDate }}</td>
 						<td class="px-6 py-4 flex gap-2">
 							@if (ticket.status !== 'Cancelled') {
-								<button mat-raised-button color="primary" (click)="cancelTicket(ticket.id)">Cancel</button>
+								<button mat-raised-button color="primary" (click)="cancelTicket(ticket.id, ticket.eventName)">Cancel</button>
 							}
-							<button mat-raised-button color="warn" (click)="deleteTicket(ticket.id)">Delete</button>
+							<button mat-raised-button color="warn" (click)="deleteTicket(ticket.id, ticket.eventName)">Delete</button>
 						</td>
 					</tr>
 				}

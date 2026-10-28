@@ -22,7 +22,7 @@
           <p>Status: {{ getStatusLabel(ticket.status) }}</p>
           <button mat-raised-button color="primary" [routerLink]="['/tickets', ticket.id]">View ticket</button>
           @if(ticket.status === 0) {
-            <button mat-raised-button color="warn" (click)="cancel(ticket.id)">Cancel</button>
+            <button mat-raised-button color="warn" (click)="cancel(ticket.id, ticket.eventName)">Cancel</button>
           }
         </mat-card-content>
       </mat-card>

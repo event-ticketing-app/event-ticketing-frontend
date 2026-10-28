@@ -30,7 +30,6 @@ export class Navbar {
   ) {}
 
   searchTerm: string = ''
-  showSearch: boolean = false;
   isReady: boolean = false;
 
   ngOnInit(){
@@ -39,9 +38,6 @@ export class Navbar {
     }
   }
 
-  toggleSearch(){
-    this.showSearch = !this.showSearch;
-  }
   onSearch(term: string){
     this.searchService.setSearchTerm(term);
   }

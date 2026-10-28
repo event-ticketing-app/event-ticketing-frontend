@@ -31,6 +31,9 @@ export const routes: Routes = [
     { path: 'admin', component: Admin, canActivate: [adminGuard] },
     { path: 'admin/users', component: AdminUsers, canActivate: [adminGuard] },
     { path: 'admin/events', component: AdminEvents, canActivate: [adminGuard] },
-    { path: 'admin/tickets', component: AdminTickets, canActivate: [adminGuard] }
+    { path: 'admin/tickets', component: AdminTickets, canActivate: [adminGuard] },
 
+    // Home and any unknown URL (e.g. /hola) go to the events list
+    { path: '', redirectTo: 'events', pathMatch: 'full' },
+    { path: '**', redirectTo: 'events' }
 ];

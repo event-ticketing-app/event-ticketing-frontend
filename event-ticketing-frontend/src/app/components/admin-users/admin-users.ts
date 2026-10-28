@@ -5,6 +5,8 @@ import { isPlatformBrowser, NgClass } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { UserForm } from '../user-form/user-form';
+import { ConfirmService } from '../../services/confirm';
+import { AdminUserDetails } from '../admin-user-details/admin-user-details';
 
 @Component({
   selector: 'app-admin-users',
@@ -26,6 +28,7 @@ export class AdminUsers implements OnInit
       private cdr: ChangeDetectorRef,
       private searchService: Search,
       private dialog: MatDialog,
+      private confirm: ConfirmService,
     ){}
 
     ngOnInit(){
@@ -67,13 +70,21 @@ export class AdminUsers implements OnInit
       });
     }
 
-    deleteUser(id: number) {
-      this.adminService.deleteUser(id).subscribe(() => {
-        this.loadUsers();
+    deleteUser(id: number, name: string) {
+      this.confirm.ask({
+        title: 'Delete user',
+        message: `Are you sure you want to delete the user "${name}"? This action cannot be undone.`,
+      }).subscribe(() => {
+        this.adminService.deleteUser(id).subscribe(() => {
+          this.loadUsers();
+        });
       });
     }
 
     viewUserDetails(user: AdminUserResponse) {
-      this.openEditUser(user);
+      this.dialog.open(AdminUserDetails, {
+        width: '500px',
+        data: user,
+      });
     }
 }

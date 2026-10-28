@@ -11,6 +11,12 @@
 
   <h2 class="text-2xl font-bold text-gray-900 mb-6">Welcome to EventTicketing</h2>
 
+  @if (errorMessage) {
+    <div class="mb-4 px-3.5 py-2.5 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700" role="alert">
+      {{ errorMessage }}
+    </div>
+  }
+
   <form (ngSubmit)="login()" class="flex flex-col gap-4">
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Email</mat-label>
@@ -22,8 +28,8 @@
       <input matInput type="password" [(ngModel)]="password" name="password" />
     </mat-form-field>
 
-    <button mat-stroked-button color="primary" type="submit" class="w-full py-3 text-base">
-      Login
+    <button mat-stroked-button color="primary" type="submit" class="w-full py-3 text-base" [disabled]="loading">
+      {{ loading ? 'Signing in...' : 'Login' }}
     </button>
   </form>
 

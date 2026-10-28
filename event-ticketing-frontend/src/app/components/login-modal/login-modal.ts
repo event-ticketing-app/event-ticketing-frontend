@@ -26,16 +26,28 @@ export class LoginModal {
   email: string = '';
   password: string = '';
 
+  errorMessage = '';
+  loading = false;
+
   login() {
-    this.authService.login(this.email, this.password).subscribe(response => {
-      localStorage.setItem('token', response.token);
-      this.dialogRef.close();
-      const role = this.authService.getRole();
-      if (role === 'Admin') {
-        this.router.navigate(['/admin']);
-      } else {
-        this.router.navigate(['/events']);
-      }
+    this.errorMessage = '';
+    this.loading = true;
+
+    this.authService.login(this.email, this.password).subscribe({
+      next: (response) => {
+        this.authService.setToken(response.token);
+        this.dialogRef.close();
+        const role = this.authService.getRole();
+        if (role === 'Admin') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/events']);
+        }
+      },
+      error: () => {
+        this.loading = false;
+        this.errorMessage = 'Invalid email or password.';
+      },
     });
   }
 }

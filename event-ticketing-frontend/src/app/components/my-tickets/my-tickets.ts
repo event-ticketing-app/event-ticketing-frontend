@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TicketPurchaseResponse } from '../../services/ticket';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
+import { ConfirmService } from '../../services/confirm';
 
 @Component({
   selector: 'app-my-tickets',
@@ -22,7 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 export class MyTickets implements OnInit
 {
   tickets: TicketPurchaseResponse[] = [];
-  constructor(private ticketService: TicketService,@Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef){}
+  constructor(private ticketService: TicketService,@Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef, private confirm: ConfirmService){}
   selectedStatus: number | null = null;
 
   get filteredTickets() {
@@ -36,12 +37,19 @@ export class MyTickets implements OnInit
       this.cdr.detectChanges();
     })
   }
-  cancel(id: number){
+  cancel(id: number, eventName: string){
     if (!isPlatformBrowser(this.platformId)) return;
-    this.ticketService.cancelTicket(id).subscribe(() => {
-      this.ticketService.getMyTickets().subscribe(response => {
-        this.tickets = response;
-        this.cdr.detectChanges();
+    this.confirm.ask({
+      title: 'Cancel ticket',
+      message: `Are you sure you want to cancel your ticket for "${eventName}"?`,
+      confirmText: 'Cancel ticket',
+      cancelText: 'Keep ticket',
+    }).subscribe(() => {
+      this.ticketService.cancelTicket(id).subscribe(() => {
+        this.ticketService.getMyTickets().subscribe(response => {
+          this.tickets = response;
+          this.cdr.detectChanges();
+        });
       });
     });
   }

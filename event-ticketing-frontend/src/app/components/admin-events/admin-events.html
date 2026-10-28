@@ -25,9 +25,9 @@
             <td class="px-6 py-4 text-sm text-gray-500">{{ event.ticketCapacity }}</td>
             <td class="px-6 py-4 text-sm text-gray-500">{{ event.organizerName }}</td>
             <td class="px-6 py-4 flex gap-2">
-              <button mat-raised-button (click)="viewEventDetails(event.id)">View Details</button>
+              <button mat-raised-button (click)="viewEventDetails(event)">View Details</button>
               <button mat-raised-button color="primary" (click)="openEditEvent(event)">Edit</button>
-              <button mat-raised-button color="warn" (click)="deleteEvent(event.id)">Delete</button>
+              <button mat-raised-button color="warn" (click)="deleteEvent(event.id, event.name)">Delete</button>
             </td>
           </tr>
         }

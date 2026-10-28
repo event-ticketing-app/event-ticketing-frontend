@@ -5,7 +5,8 @@ import { isPlatformBrowser} from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { EventForm } from '../event-form/event-form';
-import { Router } from '@angular/router';
+import { ConfirmService } from '../../services/confirm';
+import { AdminEventDetails } from '../admin-event-details/admin-event-details';
 
 @Component({
   selector: 'app-admin-events',
@@ -28,7 +29,7 @@ export class AdminEvents implements OnInit {
     private cdr: ChangeDetectorRef,
     private searchService: Search,
     private dialog: MatDialog,
-    private router: Router,
+    private confirm: ConfirmService,
   ) {}
 
   ngOnInit() {
@@ -69,13 +70,21 @@ export class AdminEvents implements OnInit {
     });
   }
 
-  deleteEvent(id: number) {
-    this.adminService.deleteEvent(id).subscribe(() => {
-      this.loadEvents();
+  deleteEvent(id: number, name: string) {
+    this.confirm.ask({
+      title: 'Delete event',
+      message: `Are you sure you want to delete "${name}"? This action cannot be undone.`,
+    }).subscribe(() => {
+      this.adminService.deleteEvent(id).subscribe(() => {
+        this.loadEvents();
+      });
     });
   }
 
-  viewEventDetails(id: number) {
-    this.router.navigate(['/events', id]);
+  viewEventDetails(event: AdminEventResponse) {
+    this.dialog.open(AdminEventDetails, {
+      width: '560px',
+      data: event,
+    });
   }
 }

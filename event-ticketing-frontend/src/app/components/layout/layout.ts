@@ -16,10 +16,7 @@ import { SidebarService } from '../../services/sidebar';
 export class Layout 
 {constructor(private authService: Auth, @Inject(PLATFORM_ID) private platformId: Object, private sidebarService: SidebarService){}
 getRole(){
-  if (!isPlatformBrowser(this.platformId)) return null;
-  const role = this.authService.getRole();
-  console.log('Layout role:', role);
-  return role;
+  return this.authService.getRole();
 }
 isSidebarOpen(){
   return this.sidebarService.getIsOpen();
