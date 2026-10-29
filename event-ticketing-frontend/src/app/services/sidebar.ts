@@ -1,15 +1,24 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SidebarService {
-  isOpen = false;
+  private readonly open = signal(false);
+
   toggle() {
-    this.isOpen = !this.isOpen;
-    console.log('Sidebar state:', this.isOpen);
+    this.open.update((isOpen) => !isOpen);
   }
-  getIsOpen(){
-    return this.isOpen;
+
+  setOpen(isOpen: boolean) {
+    this.open.set(isOpen);
+  }
+
+  close() {
+    this.open.set(false);
+  }
+
+  getIsOpen() {
+    return this.open();
   }
 }

@@ -9,9 +9,11 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 
+import { ImageUpload } from '../image-upload/image-upload';
+
 @Component({
   selector: 'app-edit-event',
-  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, FormsModule],
+  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, FormsModule, ImageUpload],
   templateUrl: './edit-event.html',
   styleUrl: './edit-event.css',
 })
@@ -30,6 +32,7 @@ export class EditEvent implements OnInit {
   price: number = 0;
   imageUrl: string = '';
   ticketCapacity: number = 0;
+  uploading = false;
 
   ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -46,6 +49,7 @@ export class EditEvent implements OnInit {
   }
 
   updateEvent() {
+    if (this.uploading) return;
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.eventService.putEvent(id, {
       name: this.name,

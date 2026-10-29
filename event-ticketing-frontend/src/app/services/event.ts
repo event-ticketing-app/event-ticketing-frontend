@@ -11,6 +11,7 @@ export interface EventResponse {
   price: number;
   ticketCapacity: number;
   imageUrl: string;
+  status: number;
 
 }
 export interface EventCreateRequest {

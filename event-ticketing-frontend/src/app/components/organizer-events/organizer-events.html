@@ -5,6 +5,10 @@
         <mat-card-title>{{ event.name }}</mat-card-title>
         <mat-card-subtitle>{{ event.date | date:'dd/MM/yyyy' }}</mat-card-subtitle>
       </mat-card-header>
+      <div class="px-4 pt-2">
+        <span class="inline-flex px-2.5 py-0.5 rounded-full border text-xs font-semibold" [class]="statusClasses(event.status)">{{ statusLabel(event.status) }}</span>
+        <p class="text-xs text-gray-500 mt-1 mb-0">{{ statusHint(event.status) }}</p>
+      </div>
       <mat-card-content>
         <img [src]="event.imageUrl" alt="{{ event.name }}" />
         <p>{{ event.description }}</p>

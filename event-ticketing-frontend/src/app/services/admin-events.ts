@@ -12,6 +12,7 @@ export interface AdminEventResponse {
   imageUrl: string;
   organizerName: string;
   organizerEmail: string;
+  status: number;
 }
 
 @Injectable({
@@ -34,6 +35,14 @@ export class AdminEventsService
 
   updateEvent(id: number, event: any) {
     return this.http.put(`${environment.apiUrl}/api/admin/events/${id}`, event);
+  }
+
+  approveEvent(id: number) {
+    return this.http.put(`${environment.apiUrl}/api/admin/events/${id}/approve`, {});
+  }
+
+  rejectEvent(id: number) {
+    return this.http.put(`${environment.apiUrl}/api/admin/events/${id}/reject`, {});
   }
 
   deleteEvent(id: number) {

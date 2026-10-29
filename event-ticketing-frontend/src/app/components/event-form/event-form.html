@@ -28,10 +28,7 @@
       <input matInput type="number" min="1" [(ngModel)]="ticketCapacity" name="ticketCapacity" required />
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Image URL</mat-label>
-      <input matInput [(ngModel)]="imageUrl" name="imageUrl" required />
-    </mat-form-field>
+    <app-image-upload [(imageUrl)]="imageUrl" [(uploading)]="uploading" />
 
     @if (!event) {
       <mat-form-field appearance="outline">
@@ -44,8 +41,8 @@
       </mat-form-field>
     }
 
-    <button mat-raised-button color="primary" type="submit">
-      {{ event ? 'Save Changes' : 'Create Event' }}
+    <button mat-raised-button color="primary" type="submit" [disabled]="uploading">
+      {{ uploading ? 'Uploading image...' : (event ? 'Save Changes' : 'Create Event') }}
     </button>
 
   </form>

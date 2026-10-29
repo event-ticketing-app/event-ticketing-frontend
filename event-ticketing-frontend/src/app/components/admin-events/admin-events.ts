@@ -3,20 +3,28 @@ import { AdminEventsService, AdminEventResponse } from '../../services/admin-eve
 import { Search } from '../../services/search';
 import { isPlatformBrowser} from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 import { DisplayDatePipe } from '../../pipes/display-date.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { EventForm } from '../event-form/event-form';
 import { ConfirmService } from '../../services/confirm';
+import { EventStatus, getEventStatusClasses, getEventStatusLabel } from '../../services/event-status';
 import { AdminEventDetails } from '../admin-event-details/admin-event-details';
 
 @Component({
   selector: 'app-admin-events',
-  imports: [MatButtonModule, DisplayDatePipe],
+  imports: [MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, DisplayDatePipe],
   templateUrl: './admin-events.html',
   styleUrl: './admin-events.css',
 })
 export class AdminEvents implements OnInit {
   events: AdminEventResponse[] = [];
+
+  readonly EventStatus = EventStatus;
+  readonly statusLabel = getEventStatusLabel;
+  readonly statusClasses = getEventStatusClasses;
 
   get filteredEvents() {
     return this.events.filter(e =>
@@ -68,6 +76,26 @@ export class AdminEvents implements OnInit {
         dialogRef.close();
         this.loadEvents();
       });
+    });
+  }
+
+  approveEvent(id: number, name: string) {
+    this.confirm.ask({
+      title: 'Approve event',
+      message: `Approve "${name}"? It will be published and visible to everyone.`,
+      confirmText: 'Approve',
+    }).subscribe(() => {
+      this.adminService.approveEvent(id).subscribe(() => this.loadEvents());
+    });
+  }
+
+  rejectEvent(id: number, name: string) {
+    this.confirm.ask({
+      title: 'Reject event',
+      message: `Reject "${name}"? It will be hidden from the public list.`,
+      confirmText: 'Reject',
+    }).subscribe(() => {
+      this.adminService.rejectEvent(id).subscribe(() => this.loadEvents());
     });
   }
 

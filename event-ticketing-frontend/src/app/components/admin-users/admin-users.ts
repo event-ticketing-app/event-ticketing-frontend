@@ -3,6 +3,9 @@ import { AdminUsersService, AdminUserResponse } from '../../services/admin-users
 import { Search } from '../../services/search';
 import { isPlatformBrowser, NgClass } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatDialog } from '@angular/material/dialog';
 import { UserForm } from '../user-form/user-form';
 import { ConfirmService } from '../../services/confirm';
@@ -10,7 +13,7 @@ import { AdminUserDetails } from '../admin-user-details/admin-user-details';
 
 @Component({
   selector: 'app-admin-users',
-  imports: [NgClass, MatButtonModule],
+  imports: [NgClass, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule],
   templateUrl: './admin-users.html',
   styleUrl: './admin-users.css',
 })

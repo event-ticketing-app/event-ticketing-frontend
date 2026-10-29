@@ -24,16 +24,15 @@
       <input matInput type="number" [(ngModel)]="price" name="price" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Image URL</mat-label>
-      <input matInput [(ngModel)]="imageUrl" name="imageUrl" />
-    </mat-form-field>
+    <app-image-upload [(imageUrl)]="imageUrl" [(uploading)]="uploading" />
 
     <mat-form-field appearance="outline">
       <mat-label>Ticket Capacity</mat-label>
       <input matInput type="number" [(ngModel)]="ticketCapacity" name="ticketCapacity" />
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit">Save Changes</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="uploading">
+      {{ uploading ? 'Uploading image...' : 'Save Changes' }}
+    </button>
   </form>
 </div>

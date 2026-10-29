@@ -20,6 +20,10 @@ export class AdminUsersService
     return this.http.get<AdminUserResponse[]>(`${environment.apiUrl}/api/admin/users`);
   }
 
+  getUser(id: number) {
+    return this.http.get<AdminUserResponse>(`${environment.apiUrl}/api/admin/users/${id}`);
+  }
+
   createUser(user: any) {
     return this.http.post(`${environment.apiUrl}/api/admin/users`, user);
   }

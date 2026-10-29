@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { getEventStatusClasses, getEventStatusHint, getEventStatusLabel } from '../../services/event-status';
 
 @Component({
   selector: 'app-organizer-events',
@@ -18,6 +19,9 @@ import { MatButtonModule } from '@angular/material/button';
 export class OrganizerEvents  implements OnInit
 {
   events: EventResponse[] = [];
+  readonly statusLabel = getEventStatusLabel;
+  readonly statusClasses = getEventStatusClasses;
+  readonly statusHint = getEventStatusHint;
   constructor(private eventService: EventService,@Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef){}
   ngOnInit(){
     if (!isPlatformBrowser(this.platformId)) return;

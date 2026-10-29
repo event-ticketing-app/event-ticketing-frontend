@@ -4,6 +4,8 @@ import { environment } from '../../environments/environment';
 
 export interface AdminTicketResponse {
   id: number;
+  eventId: number;
+  userId: number;
   eventName: string;
   eventDescription: string;
   userName: string;

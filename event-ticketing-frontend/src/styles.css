@@ -62,3 +62,20 @@ mat-sidenav {
   background: transparent !important;
   border: none !important;
 }
+
+/* Admin "Actions" dropdowns */
+.actions-trigger {
+  white-space: nowrap;
+}
+.mat-mdc-menu-item.menu-success,
+.mat-mdc-menu-item.menu-success .mat-icon {
+  color: #059669 !important;
+}
+.mat-mdc-menu-item.menu-warning,
+.mat-mdc-menu-item.menu-warning .mat-icon {
+  color: #d97706 !important;
+}
+.mat-mdc-menu-item.menu-danger,
+.mat-mdc-menu-item.menu-danger .mat-icon {
+  color: #dc2626 !important;
+}

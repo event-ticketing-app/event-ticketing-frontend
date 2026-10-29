@@ -9,6 +9,7 @@
       <thead class="bg-gray-50 border-b border-gray-100">
         <tr>
           <th class="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+          <th class="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
           <th class="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
           <th class="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
           <th class="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">TicketCapacity</th>
@@ -20,14 +21,45 @@
         @for(event of filteredEvents; track event.id) {
           <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
             <td class="px-6 py-4 text-sm text-gray-900">{{ event.name }}</td>
+            <td class="px-6 py-4 text-sm">
+              <span class="inline-flex px-2.5 py-0.5 rounded-full border text-xs font-semibold" [class]="statusClasses(event.status)">{{ statusLabel(event.status) }}</span>
+            </td>
             <td class="px-6 py-4 text-sm text-gray-500">{{ event.date | displayDate }}</td>
             <td class="px-6 py-4 text-sm text-gray-500">{{ event.price }}</td>
             <td class="px-6 py-4 text-sm text-gray-500">{{ event.ticketCapacity }}</td>
             <td class="px-6 py-4 text-sm text-gray-500">{{ event.organizerName }}</td>
-            <td class="px-6 py-4 flex gap-2">
-              <button mat-raised-button (click)="viewEventDetails(event)">View Details</button>
-              <button mat-raised-button color="primary" (click)="openEditEvent(event)">Edit</button>
-              <button mat-raised-button color="warn" (click)="deleteEvent(event.id, event.name)">Delete</button>
+            <td class="px-6 py-4">
+              <button mat-stroked-button class="actions-trigger" [matMenuTriggerFor]="eventMenu">
+                Actions
+                <mat-icon iconPositionEnd>expand_more</mat-icon>
+              </button>
+              <mat-menu #eventMenu="matMenu" xPosition="before">
+                <button mat-menu-item (click)="viewEventDetails(event)">
+                  <mat-icon>visibility</mat-icon>
+                  <span>View details</span>
+                </button>
+                <button mat-menu-item (click)="openEditEvent(event)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                @if (event.status !== EventStatus.Active) {
+                  <button mat-menu-item class="menu-success" (click)="approveEvent(event.id, event.name)">
+                    <mat-icon>check_circle</mat-icon>
+                    <span>Approve</span>
+                  </button>
+                }
+                @if (event.status !== EventStatus.Rejected) {
+                  <button mat-menu-item class="menu-warning" (click)="rejectEvent(event.id, event.name)">
+                    <mat-icon>block</mat-icon>
+                    <span>Reject</span>
+                  </button>
+                }
+                <mat-divider />
+                <button mat-menu-item class="menu-danger" (click)="deleteEvent(event.id, event.name)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
             </td>
           </tr>
         }

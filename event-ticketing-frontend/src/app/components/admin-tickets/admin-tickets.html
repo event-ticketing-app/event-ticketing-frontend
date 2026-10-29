@@ -18,18 +18,35 @@
 			<tbody>
 				@for(ticket of filteredTickets; track ticket.id) {
 					<tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-						<td class="px-6 py-4 text-sm text-gray-900">{{ ticket.eventName }}</td>
-						<td class="px-6 py-4 text-sm text-gray-500">{{ ticket.userName }}</td>
+						<td class="px-6 py-4 text-sm">
+							<button type="button" class="text-left font-medium text-red-600 hover:text-red-800 hover:underline cursor-pointer bg-transparent border-0 p-0" title="View event details" (click)="viewEventDetails(ticket.eventId)">{{ ticket.eventName }}</button>
+						</td>
+						<td class="px-6 py-4 text-sm">
+							<button type="button" class="text-left font-medium text-red-600 hover:text-red-800 hover:underline cursor-pointer bg-transparent border-0 p-0" title="View user details" (click)="viewUserDetails(ticket.userId)">{{ ticket.userName }}</button>
+						</td>
 						<td class="px-6 py-4 text-sm">
 							<span class="inline-flex px-2.5 py-0.5 rounded-full border text-xs font-semibold" [class]="statusClasses(ticket.status)">{{ statusLabel(ticket.status) }}</span>
 						</td>
 						<td class="px-6 py-4 text-sm text-gray-500">{{ ticket.price }}</td>
 						<td class="px-6 py-4 text-sm text-gray-500">{{ ticket.purchaseDate | displayDate }}</td>
-						<td class="px-6 py-4 flex gap-2">
-							@if (canCancel(ticket.status)) {
-								<button mat-raised-button color="primary" (click)="cancelTicket(ticket.id, ticket.eventName)">Cancel</button>
-							}
-							<button mat-raised-button color="warn" (click)="deleteTicket(ticket.id, ticket.eventName)">Delete</button>
+						<td class="px-6 py-4">
+							<button mat-stroked-button class="actions-trigger" [matMenuTriggerFor]="ticketMenu">
+							  Actions
+							  <mat-icon iconPositionEnd>expand_more</mat-icon>
+							</button>
+							<mat-menu #ticketMenu="matMenu" xPosition="before">
+								@if (canCancel(ticket.status)) {
+									<button mat-menu-item class="menu-warning" (click)="cancelTicket(ticket.id, ticket.eventName)">
+									  <mat-icon>event_busy</mat-icon>
+									  <span>Cancel ticket</span>
+									</button>
+									<mat-divider />
+								}
+								<button mat-menu-item class="menu-danger" (click)="deleteTicket(ticket.id, ticket.eventName)">
+								  <mat-icon>delete</mat-icon>
+								  <span>Delete</span>
+								</button>
+							</mat-menu>
 						</td>
 					</tr>
 				}

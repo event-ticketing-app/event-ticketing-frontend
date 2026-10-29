@@ -29,10 +29,26 @@
                 {{ user.role === 0 ? 'Admin' : user.role === 1 ? 'Organizer' : 'User' }}
               </span>
             </td>
-            <td class="px-6 py-4 flex gap-2">
-              <button mat-raised-button (click)="viewUserDetails(user)">View Details</button>
-              <button mat-raised-button color="primary" (click)="openEditUser(user)">Edit</button>
-              <button mat-raised-button color="warn" (click)="deleteUser(user.id, user.name)">Delete</button>
+            <td class="px-6 py-4">
+              <button mat-stroked-button class="actions-trigger" [matMenuTriggerFor]="userMenu">
+                Actions
+                <mat-icon iconPositionEnd>expand_more</mat-icon>
+              </button>
+              <mat-menu #userMenu="matMenu" xPosition="before">
+                <button mat-menu-item (click)="viewUserDetails(user)">
+                  <mat-icon>visibility</mat-icon>
+                  <span>View details</span>
+                </button>
+                <button mat-menu-item (click)="openEditUser(user)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <mat-divider />
+                <button mat-menu-item class="menu-danger" (click)="deleteUser(user.id, user.name)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
             </td>
           </tr>
         }

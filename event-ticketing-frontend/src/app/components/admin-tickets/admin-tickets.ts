@@ -1,6 +1,14 @@
 import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatDialog } from '@angular/material/dialog';
+import { AdminEventsService } from '../../services/admin-events';
+import { AdminUsersService } from '../../services/admin-users';
+import { AdminEventDetails } from '../admin-event-details/admin-event-details';
+import { AdminUserDetails } from '../admin-user-details/admin-user-details';
 import { DisplayDatePipe } from '../../pipes/display-date.pipe';
 import { AdminTicketsService, AdminTicketResponse } from '../../services/admin-tickets';
 import { Search } from '../../services/search';
@@ -9,7 +17,7 @@ import { canCancelTicket, getTicketStatusClasses, getTicketStatusLabel } from '.
 
 @Component({
   selector: 'app-admin-tickets',
-  imports: [MatButtonModule, DisplayDatePipe],
+  imports: [MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, DisplayDatePipe],
   templateUrl: './admin-tickets.html',
   styleUrl: './admin-tickets.css',
 })
@@ -33,6 +41,9 @@ export class AdminTickets implements OnInit {
     private cdr: ChangeDetectorRef,
     private searchService: Search,
     private confirm: ConfirmService,
+    private dialog: MatDialog,
+    private adminEventsService: AdminEventsService,
+    private adminUsersService: AdminUsersService,
   ) {}
 
   ngOnInit() {
@@ -44,6 +55,20 @@ export class AdminTickets implements OnInit {
     this.adminTicketsService.getTickets().subscribe(response => {
       this.tickets = response;
       this.cdr.detectChanges();
+    });
+  }
+
+  viewEventDetails(eventId: number) {
+    if (!eventId) return;
+    this.adminEventsService.getEvent(eventId).subscribe(event => {
+      this.dialog.open(AdminEventDetails, { width: '560px', data: event });
+    });
+  }
+
+  viewUserDetails(userId: number) {
+    if (!userId) return;
+    this.adminUsersService.getUser(userId).subscribe(user => {
+      this.dialog.open(AdminUserDetails, { width: '500px', data: user });
     });
   }
 

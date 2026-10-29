@@ -8,10 +8,11 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { AdminEventResponse } from '../../services/admin-events';
 import { AdminUsersService, AdminUserResponse } from '../../services/admin-users';
+import { ImageUpload } from '../image-upload/image-upload';
 
 @Component({
   selector: 'app-event-form',
-  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule],
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, ImageUpload],
   templateUrl: './event-form.html',
   styleUrl: './event-form.css',
 })
@@ -27,6 +28,7 @@ export class EventForm implements OnInit {
   ticketCapacity: number = 0;
   imageUrl: string = '';
   organizerId: number = 0;
+  uploading = false;
 
   constructor(private adminUsersService: AdminUsersService) {}
 
@@ -50,6 +52,7 @@ export class EventForm implements OnInit {
   }
 
   submit() {
+    if (this.uploading) return;
     this.formSubmit.emit({
       name: this.name,
       description: this.description,
