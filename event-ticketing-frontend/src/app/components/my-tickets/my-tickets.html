@@ -207,23 +207,40 @@
                   <span class="code-num text-c-tertiary font-semibold">#{{ ticket.id }}</span>
                 </div>
                 <div class="flex flex-col items-end min-w-0 text-right">
-                  <span class="label-sm uppercase text-c-outline tracking-wider">
-                    {{ ticket.status === TicketStatus.Reserved ? 'Reserved on' : 'Purchased on' }}
-                  </span>
-                  <span class="code-num text-c-on-surface">{{ ticket.purchaseAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+                  @switch (ticket.status) {
+                    @case (TicketStatus.Purchased) {
+                      <span class="label-sm uppercase text-c-outline tracking-wider">Purchased on</span>
+                      <span class="code-num text-c-on-surface">{{ ticket.purchaseAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+                    }
+                    @case (TicketStatus.Reserved) {
+                      <span class="label-sm uppercase text-c-outline tracking-wider">Held until</span>
+                      <span class="code-num text-c-warning">{{ ticket.expiresAt | date: 'HH:mm' }}</span>
+                    }
+                    @default {
+                      <span class="label-sm uppercase text-c-outline tracking-wider">Status</span>
+                      <span class="code-num text-c-on-surface">Not valid</span>
+                    }
+                  }
                 </div>
               </div>
 
               <div class="flex items-center gap-2">
-                <a
-                  [routerLink]="['/tickets', ticket.id]"
-                  class="group/btn flex-1 py-3 px-4"
-                  [class.primary-button]="ticket.status === TicketStatus.Purchased"
-                  [class.secondary-button]="ticket.status !== TicketStatus.Purchased"
-                >
-                  <span>View Ticket</span>
-                  <mat-icon class="icon-20 transition-transform group-hover/btn:translate-x-1">arrow_forward</mat-icon>
-                </a>
+                @if (ticket.status === TicketStatus.Reserved) {
+                  <a [routerLink]="['/purchase', ticket.id]" class="group/btn flex-1 py-3 px-4 primary-button">
+                    <mat-icon class="icon-18">shopping_cart_checkout</mat-icon>
+                    <span>Complete Purchase</span>
+                  </a>
+                } @else {
+                  <a
+                    [routerLink]="['/tickets', ticket.id]"
+                    class="group/btn flex-1 py-3 px-4"
+                    [class.primary-button]="ticket.status === TicketStatus.Purchased"
+                    [class.secondary-button]="ticket.status !== TicketStatus.Purchased"
+                  >
+                    <span>View Ticket</span>
+                    <mat-icon class="icon-20 transition-transform group-hover/btn:translate-x-1">arrow_forward</mat-icon>
+                  </a>
+                }
                 @if (canCancel(ticket.status)) {
                   <button
                     type="button"
@@ -250,7 +267,7 @@
         </div>
         <div>
           <h4 class="title text-c-on-surface">Reserved tickets expire after 10 minutes</h4>
-          <p class="body-sm text-c-on-surface-variant">If a reservation isn't purchased in time it is released. Only reserved tickets can be cancelled.</p>
+          <p class="body-sm text-c-on-surface-variant">Use “Complete Purchase” to pay before the timer ends, or the spot is released. Only reserved tickets can be cancelled.</p>
         </div>
       </div>
       <a [routerLink]="['/events']" class="trust-chip no-underline">

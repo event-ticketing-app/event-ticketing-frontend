@@ -59,7 +59,7 @@ export class MyTickets implements OnInit {
 
     return [...list].sort((a, b) => {
       switch (this.sortBy()) {
-        case 'recent': return new Date(b.purchaseAt).getTime() - new Date(a.purchaseAt).getTime();
+        case 'recent': return this.activityTime(b) - this.activityTime(a);
         case 'price-desc': return b.price - a.price;
         case 'price-asc': return a.price - b.price;
         default: return new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime();
@@ -104,6 +104,11 @@ export class MyTickets implements OnInit {
 
   countFor(status: TicketStatus | null): number {
     return status === null ? this.searched().length : this.searched().filter((t) => t.status === status).length;
+  }
+
+  /** Purchase date, or the reservation time for tickets that were never paid. */
+  private activityTime(ticket: TicketPurchaseResponse): number {
+    return new Date(ticket.purchaseAt ?? ticket.expiresAt).getTime();
   }
 
   isPast(ticket: TicketPurchaseResponse): boolean {

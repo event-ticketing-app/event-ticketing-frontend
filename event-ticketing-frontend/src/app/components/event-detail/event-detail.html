@@ -271,19 +271,6 @@
 
               <!-- Role-based actions -->
               @if (canReserve()) {
-                @if (ticket(); as t) {
-                  <div class="success-box mb-4">
-                    <mat-icon class="icon-20 text-c-tertiary">check_circle</mat-icon>
-                    <div>
-                      <p class="title text-c-tertiary">Ticket reserved!</p>
-                      <p class="body-sm text-c-on-surface-variant">Complete the purchase before {{ t.expiresAt | date: 'HH:mm' }} or the reservation will expire.</p>
-                    </div>
-                  </div>
-                  <button type="button" class="cta-button w-full py-4 px-6 mb-5" [disabled]="busy()" (click)="purchase()">
-                    <mat-icon class="icon-20">shopping_cart_checkout</mat-icon>
-                    <span>{{ busy() ? 'Processing...' : 'Purchase Ticket' }}</span>
-                  </button>
-                } @else {
                   <button type="button" class="cta-button w-full py-4 px-6 mb-5" [disabled]="busy() || isSoldOut(ev)" (click)="reserve()">
                     <mat-icon class="icon-20">confirmation_number</mat-icon>
                     <span>{{ isSoldOut(ev) ? 'Sold Out' : busy() ? 'Reserving...' : 'Reserve Ticket' }}</span>
@@ -294,7 +281,6 @@
                   @if (getRole() === null) {
                     <p class="body-sm text-c-outline text-center -mt-3 mb-5">You'll need to sign in to reserve.</p>
                   }
-                }
               } @else if (isAdmin() || isOwner(ev)) {
                 <div class="success-box mb-4">
                   <mat-icon class="icon-24 text-c-tertiary shrink-0">verified_user</mat-icon>

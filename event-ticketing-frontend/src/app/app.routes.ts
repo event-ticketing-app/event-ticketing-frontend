@@ -24,6 +24,7 @@ export const routes: Routes = [
     { path: 'events', component: EventList},
     { path: 'events/:id', component: EventDetail},
     { path: 'tickets/:id', component: TicketDetail, canActivate: [authGuard]  },
+    { path: 'purchase/:id', loadComponent: () => import('./components/purchase/purchase').then(m => m.Purchase), canActivate: [authGuard] },
     { path: 'my-tickets', component: MyTickets, canActivate: [authGuard]  },
     { path: 'organizer-events', component: OrganizerEvents, canActivate: [organizerGuard] },
     { path: 'create-event', component: CreateEvent, canActivate: [organizerGuard] },

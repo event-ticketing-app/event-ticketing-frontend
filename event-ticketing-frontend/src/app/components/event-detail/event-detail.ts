@@ -6,7 +6,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { EventResponse, EventService } from '../../services/event';
-import { TicketReserveResponse, TicketService } from '../../services/ticket';
+import { TicketService } from '../../services/ticket';
 import { AdminEventsService } from '../../services/admin-events';
 import { Auth } from '../../services/auth';
 import { isLowStock, isSoldOut, soldPercent, spotsLeft } from '../../services/event-spots';
@@ -24,7 +24,6 @@ export class EventDetail implements OnInit {
   readonly loading = signal(true);
   readonly notFound = signal(false);
 
-  readonly ticket = signal<TicketReserveResponse | null>(null);
   readonly busy = signal(false);
   readonly actionError = signal('');
 
@@ -134,6 +133,7 @@ export class EventDetail implements OnInit {
     setTimeout(() => this.shareMessage.set(''), 2000);
   }
 
+  /** Reserves a spot and goes to the purchase page, where the 10-minute timer and the payment are. */
   reserve() {
     const event = this.event();
     if (!event) return;
@@ -144,24 +144,8 @@ export class EventDetail implements OnInit {
     this.busy.set(true);
     this.actionError.set('');
     this.ticketService.reserve(event.id).subscribe({
-      next: (response) => {
-        this.ticket.set(response);
-        this.busy.set(false);
-        // A reservation takes a spot, so refresh the counter
-        this.event.update((e) => (e ? { ...e, ticketsSold: (e.ticketsSold ?? 0) + 1 } : e));
-      },
+      next: (response) => this.router.navigate(['/purchase', response.id]),
       error: (err: HttpErrorResponse) => this.fail(err, 'We could not reserve your ticket. Please try again.'),
-    });
-  }
-
-  purchase() {
-    const ticket = this.ticket();
-    if (!ticket) return;
-    this.busy.set(true);
-    this.actionError.set('');
-    this.ticketService.purchase(ticket.id).subscribe({
-      next: () => this.router.navigate(['/tickets', ticket.id]),
-      error: (err: HttpErrorResponse) => this.fail(err, 'We could not complete the purchase. Your reservation may have expired.'),
     });
   }
 
@@ -189,7 +173,9 @@ export class EventDetail implements OnInit {
   }
 
   private fail(err: HttpErrorResponse, fallback: string) {
-    const message = typeof err.error === 'string' && err.error.length < 200 ? err.error : fallback;
+    // The API sends errors as { message } (ExceptionMiddleware) or as a plain string
+    const apiMessage = typeof err.error === 'string' ? err.error : err.error?.message;
+    const message = typeof apiMessage === 'string' && apiMessage.length < 200 ? apiMessage : fallback;
     this.actionError.set(message);
     this.busy.set(false);
   }

@@ -1,0 +1,208 @@
+<div class="purchase-page">
+  <div class="relative w-full overflow-hidden">
+    <div class="glow glow-red"></div>
+    <div class="glow glow-teal"></div>
+
+    <div class="relative max-w-[1200px] mx-auto px-4 lg:px-8 py-8">
+      @if (loading()) {
+        <div class="animate-pulse flex flex-col gap-6">
+          <div class="h-5 w-64 rounded bg-c-container-high"></div>
+          <div class="h-20 w-full rounded-xl bg-c-container-low"></div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-7 h-80 rounded-xl bg-c-container-low"></div>
+            <div class="lg:col-span-5 h-80 rounded-xl bg-c-container-low"></div>
+          </div>
+        </div>
+      } @else if (loadError() || !ticket()) {
+        <div class="empty-state">
+          <div class="empty-icon"><mat-icon>confirmation_number</mat-icon></div>
+          <h1 class="headline-sm text-c-on-surface mb-1">{{ loadError() || 'Reservation not found' }}</h1>
+          <p class="body-md text-c-on-surface-variant mb-6">Go back to the events and reserve a new ticket.</p>
+          <a [routerLink]="['/events']" class="primary-button px-6 py-2.5">
+            <mat-icon class="icon-18">explore</mat-icon>
+            <span>Explore Events</span>
+          </a>
+        </div>
+      } @else {
+        @let t = ticket()!;
+
+        <!-- Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2 label-md text-c-on-surface-variant mb-6 min-w-0">
+          <a [routerLink]="['/events']" class="crumb-link">
+            <mat-icon class="icon-16 text-c-tertiary">explore</mat-icon>
+            <span>Explore Events</span>
+          </a>
+          <span class="text-c-outline-variant">/</span>
+          <a [routerLink]="['/events', t.eventId]" class="crumb-link truncate">{{ t.eventName }}</a>
+          <span class="text-c-outline-variant">/</span>
+          <span class="text-c-on-surface font-semibold">Checkout</span>
+        </nav>
+
+        <!-- Timer banner -->
+        @if (!expired()) {
+          <div class="timer-banner mb-8" [class.timer-hot]="lastMinute()" role="timer" aria-live="off">
+            <div class="flex items-center gap-4 min-w-0">
+              <div class="timer-icon"><mat-icon class="icon-24">timer</mat-icon></div>
+              <div class="min-w-0">
+                <p class="title text-c-on-surface">Your spot is reserved</p>
+                <p class="body-sm text-c-on-surface-variant">
+                  Complete the payment before the timer ends or the ticket will be released.
+                </p>
+              </div>
+            </div>
+            <div class="flex flex-col items-end shrink-0">
+              <span class="countdown" [attr.aria-label]="'Time left ' + countdown()">{{ countdown() }}</span>
+              <span class="label-sm uppercase text-c-on-surface-variant tracking-wider">minutes left</span>
+            </div>
+            <div class="timer-track"><div class="timer-fill" [style.width.%]="remainingPercent()"></div></div>
+          </div>
+        }
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- LEFT: payment -->
+          <section class="lg:col-span-7 panel">
+            @if (expired()) {
+              <div class="flex flex-col items-center text-center py-6">
+                <div class="empty-icon expired-icon"><mat-icon>timer_off</mat-icon></div>
+                <h1 class="headline-md text-c-on-surface mb-2">Your reservation expired</h1>
+                <p class="body-md text-c-on-surface-variant max-w-md mb-6">
+                  The 10 minutes to complete the purchase have passed and your spot was released.
+                  You can reserve again if there are tickets left.
+                </p>
+                <a [routerLink]="['/events', t.eventId]" class="primary-button px-6 py-3">
+                  <mat-icon class="icon-18">arrow_back</mat-icon>
+                  <span>Back to event</span>
+                </a>
+              </div>
+            } @else {
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-2.5 h-6 rounded bg-c-tertiary"></div>
+                <h1 class="headline-md text-c-on-surface">{{ isFree() ? 'Confirm your ticket' : 'Payment details' }}</h1>
+              </div>
+              <p class="body-sm text-c-on-surface-variant mb-6">
+                @if (isFree()) {
+                  This event is free. Confirm to get your ticket.
+                } @else {
+                  Payments are processed securely by Stripe. We never see your card details.
+                }
+              </p>
+
+              @if (isFree()) {
+                <button type="button" class="primary-button w-full py-4 px-6" [disabled]="processing()" (click)="claimFree()">
+                  <mat-icon class="icon-20">confirmation_number</mat-icon>
+                  <span>{{ processing() ? 'Confirming...' : 'Get free ticket' }}</span>
+                </button>
+              } @else if (paymentSetupError()) {
+                <p class="error-banner" role="alert">
+                  <mat-icon class="icon-18">error</mat-icon>
+                  <span>{{ paymentSetupError() }}</span>
+                </p>
+              } @else {
+                <div class="test-hint mb-5">
+                  <mat-icon class="icon-16 text-c-tertiary">science</mat-icon>
+                  <span>Test mode: use card <strong class="code-num">4242 4242 4242 4242</strong>, any future date and any CVC.</span>
+                </div>
+
+                @if (!paymentReady()) {
+                  <div class="animate-pulse flex flex-col gap-3 mb-2">
+                    <div class="h-11 rounded-lg bg-c-container-high"></div>
+                    <div class="grid grid-cols-2 gap-3">
+                      <div class="h-11 rounded-lg bg-c-container-high"></div>
+                      <div class="h-11 rounded-lg bg-c-container-high"></div>
+                    </div>
+                  </div>
+                }
+                <div #paymentHost class="payment-host"></div>
+
+                <button
+                  type="button"
+                  class="primary-button w-full py-4 px-6 mt-6"
+                  [disabled]="!paymentReady() || processing()"
+                  (click)="pay()"
+                >
+                  <mat-icon class="icon-20">lock</mat-icon>
+                  <span>{{ processing() ? 'Processing payment...' : 'Pay €' + t.price.toFixed(2) }}</span>
+                </button>
+              }
+
+              @if (paymentError()) {
+                <p class="error-banner mt-4" role="alert">
+                  <mat-icon class="icon-18">error</mat-icon>
+                  <span>{{ paymentError() }}</span>
+                </p>
+              }
+
+              <button type="button" class="text-button mt-5" [disabled]="processing()" (click)="cancelReservation()">
+                Cancel reservation
+              </button>
+            }
+          </section>
+
+          <!-- RIGHT: order summary -->
+          <aside class="lg:col-span-5 summary-card">
+            <div class="summary-image">
+              <img [src]="t.imageUrl | eventImage: 'card'" [alt]="t.eventName" class="summary-img" />
+              <div class="summary-fade"></div>
+              <span class="ref-pill code-num">Ticket #{{ t.id }}</span>
+            </div>
+
+            <div class="p-6 flex flex-col gap-5">
+              <div>
+                <p class="label-sm uppercase tracking-widest text-c-secondary mb-1">Order summary</p>
+                <h2 class="headline-sm text-c-on-surface break-anywhere">{{ t.eventName }}</h2>
+                <p class="body-sm text-c-on-surface-variant line-clamp-2 mt-1">{{ t.eventDescription }}</p>
+              </div>
+
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="meta-icon text-c-secondary"><mat-icon class="icon-18">calendar_month</mat-icon></div>
+                  <div class="flex flex-col">
+                    <span class="label-sm uppercase text-c-on-surface-variant">Date</span>
+                    <span class="body-md text-c-on-surface font-semibold">{{ t.eventDate | date: 'EEE, dd MMM yyyy • HH:mm' }}</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="meta-icon text-c-tertiary"><mat-icon class="icon-18">person</mat-icon></div>
+                  <div class="flex flex-col min-w-0">
+                    <span class="label-sm uppercase text-c-on-surface-variant">Ticket holder</span>
+                    <span class="body-md text-c-on-surface font-semibold truncate">{{ t.username }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="breakdown">
+                <div class="flex justify-between">
+                  <span>General Admission × 1</span>
+                  <span class="code-num text-c-on-surface">€{{ t.price.toFixed(2) }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Service fee</span>
+                  <span class="code-num text-c-tertiary">€0.00</span>
+                </div>
+                <div class="flex justify-between items-center pt-3 mt-1 total-row">
+                  <span class="title text-c-on-surface">Total</span>
+                  <span class="headline-sm text-c-on-surface code-num-font">{{ isFree() ? 'Free' : '€' + t.price.toFixed(2) }}</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-2.5">
+                <div class="flex items-center gap-2 body-sm text-c-on-surface-variant">
+                  <mat-icon class="icon-18 text-c-tertiary">lock</mat-icon>
+                  <span>Secure payment powered by Stripe</span>
+                </div>
+                <div class="flex items-center gap-2 body-sm text-c-on-surface-variant">
+                  <mat-icon class="icon-18 text-c-tertiary">bolt</mat-icon>
+                  <span>Instant ticket after payment</span>
+                </div>
+                <div class="flex items-center gap-2 body-sm text-c-on-surface-variant">
+                  <mat-icon class="icon-18 text-c-tertiary">replay</mat-icon>
+                  <span>Automatic refund if the reservation expires mid-payment</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      }
+    </div>
+  </div>
+</div>

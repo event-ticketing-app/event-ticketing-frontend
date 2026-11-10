@@ -15,9 +15,10 @@ export interface TicketResponse{
 
 export interface TicketReserveResponse{
   id: number;
+  eventId: number;
   status: number;
   price: number;
-  expiresAt: Date;
+  expiresAt: string;
 
 }
 export interface TicketPurchaseResponse{
@@ -27,8 +28,12 @@ export interface TicketPurchaseResponse{
   username: string;
   status: number;
   price: number;
+  eventId: number;
   eventDate: Date;
-  purchaseAt: Date;
+  /** Null until the ticket is purchased. */
+  purchaseAt: string | null;
+  /** When the reservation stops holding the spot (ISO date in UTC). */
+  expiresAt: string;
   imageUrl: string;
 }
 
@@ -43,8 +48,16 @@ export class TicketService
   getTicket(id: number){
     return this.http.get<TicketPurchaseResponse>(`${environment.apiUrl}/api/tickets/${id}`)
   }
-  purchase(ticketid: number){
-    return this.http.post<TicketPurchaseResponse>(`${environment.apiUrl}/api/tickets/purchase/${ticketid}`, {})  
+  /** Starts the Stripe payment for a reserved ticket. */
+  createPaymentIntent(ticketid: number){
+    return this.http.post<{ clientSecret: string }>(`${environment.apiUrl}/api/tickets/${ticketid}/payment-intent`, {})
+  }
+  /** Confirms the purchase. Paid tickets need the id of the Stripe payment that succeeded. */
+  purchase(ticketid: number, paymentIntentId?: string){
+    return this.http.post<TicketPurchaseResponse>(`${environment.apiUrl}/api/tickets/purchase/${ticketid}`, { paymentIntentId: paymentIntentId ?? null })
+  }
+  getPaymentConfig(){
+    return this.http.get<{ publishableKey: string }>(`${environment.apiUrl}/api/payments/config`)
   }
   getMyTickets(){
     return this.http.get<TicketPurchaseResponse[]>(`${environment.apiUrl}/api/tickets/my-tickets`)

@@ -46,6 +46,7 @@
 .text-c-on-surface-variant { color: var(--c-on-surface-variant); }
 .text-c-outline { color: var(--c-outline); }
 .text-c-tertiary { color: var(--c-tertiary); }
+.text-c-warning { color: var(--c-warning); }
 
 /* ---------- Typography ---------- */
 .display {

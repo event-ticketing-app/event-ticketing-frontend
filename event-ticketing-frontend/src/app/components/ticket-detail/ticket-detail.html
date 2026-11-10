@@ -74,7 +74,7 @@
                 <div class="meta-icon text-c-on-surface-variant"><mat-icon class="icon-18">receipt_long</mat-icon></div>
                 <div class="flex flex-col min-w-0">
                   <span class="label-sm uppercase text-c-on-surface-variant">Transaction time</span>
-                  <span class="title text-c-on-surface">{{ ticket.purchaseAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+                  <span class="title text-c-on-surface">{{ (ticket.purchaseAt | date: 'dd/MM/yyyy HH:mm') ?? 'Not purchased yet' }}</span>
                 </div>
               </div>
 

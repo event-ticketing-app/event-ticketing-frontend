@@ -12,6 +12,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
+    path: 'purchase/:id',
+    renderMode: RenderMode.Client
+  },
+  {
     path: 'edit-event/:id',
     renderMode: RenderMode.Client
   },
