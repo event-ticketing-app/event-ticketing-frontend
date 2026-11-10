@@ -1,0 +1,271 @@
+/* Stitch design tokens, scoped to this page (same as event-detail) */
+:host {
+  display: block;
+
+  --c-surface: #051424;
+  --c-container-lowest: #010f1f;
+  --c-container-low: #0d1c2d;
+  --c-container: #122131;
+  --c-container-high: #1c2b3c;
+  --c-container-highest: #273647;
+  --c-inverse-surface: #d4e4fa;
+  --c-on-surface: #d4e4fa;
+  --c-on-surface-variant: #c5c6cd;
+  --c-outline: #8f9097;
+  --c-outline-variant: #44474c;
+  --c-secondary: #aac9f4;
+  --c-tertiary: #55d8e1;
+  --c-error: #ffb4ab;
+  --c-error-container: #93000a;
+  --c-on-error-container: #ffdad6;
+  --c-warning: #f5c26b;
+
+  --font-body: 'Inter', 'Roboto', system-ui, sans-serif;
+  --font-headline: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+}
+
+.ticket-page {
+  min-height: calc(100vh - 70px);
+  background: var(--c-surface);
+  color: var(--c-on-surface);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 20px;
+  overflow-x: hidden;
+}
+
+/* ---------- Colors ---------- */
+.bg-c-container-lowest { background-color: var(--c-container-lowest); }
+.bg-c-container-low { background-color: var(--c-container-low); }
+.bg-c-container { background-color: var(--c-container); }
+.bg-c-tertiary { background-color: var(--c-tertiary); }
+.bg-c-error { background-color: var(--c-error); }
+.bg-c-error-container { background-color: var(--c-error-container); }
+.bg-c-warning { background-color: var(--c-warning); }
+.text-c-on-surface { color: var(--c-on-surface); }
+.text-c-on-surface-variant { color: var(--c-on-surface-variant); }
+.text-c-secondary { color: var(--c-secondary); }
+.text-c-tertiary { color: var(--c-tertiary); }
+.text-c-error { color: var(--c-error); }
+.text-c-warning { color: var(--c-warning); }
+.text-c-on-error { color: var(--c-on-error-container); }
+
+/* ---------- Typography ---------- */
+.headline-lg {
+  font-family: var(--font-headline);
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .headline-lg { font-size: 32px; line-height: 40px; letter-spacing: -0.015em; }
+}
+
+.title { font-size: 16px; line-height: 24px; font-weight: 600; margin: 0; }
+.body-md { font-size: 14px; line-height: 20px; margin: 0; }
+.label-sm { font-size: 11px; line-height: 14px; letter-spacing: 0.05em; font-weight: 500; }
+.code-num { font-size: 13px; line-height: 18px; letter-spacing: 0.02em; font-weight: 500; font-variant-numeric: tabular-nums; }
+.break-anywhere { overflow-wrap: anywhere; }
+
+/* ---------- Icons ---------- */
+mat-icon { flex-shrink: 0; }
+.icon-15 { font-size: 15px; width: 15px; height: 15px; }
+.icon-18 { font-size: 18px; width: 18px; height: 18px; }
+
+/* ---------- Ambient glow ---------- */
+.glow {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+}
+
+.glow-main {
+  top: -8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 720px;
+  height: 340px;
+  max-width: 100%;
+  background: rgba(41, 72, 109, 0.2);
+  filter: blur(110px);
+}
+
+.glow-left {
+  top: 18rem;
+  left: 10%;
+  width: 22rem;
+  height: 22rem;
+  background: rgba(0, 28, 30, 0.3);
+  filter: blur(130px);
+}
+
+.glow-right {
+  top: 24rem;
+  right: 10%;
+  width: 20rem;
+  height: 20rem;
+  background: rgba(147, 0, 10, 0.2);
+  filter: blur(140px);
+}
+
+/* ---------- Ticket card ---------- */
+/* overflow stays visible so the perforation holes can stick out of the sides */
+.ticket-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.75rem;
+  background: var(--c-container-low);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+}
+
+.hero {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  border-radius: 0.75rem 0.75rem 0 0;
+  background: var(--c-container-lowest);
+}
+
+/* Overrides the global "img { height: 250px !important }" rule */
+.hero-image {
+  display: block;
+  width: 100%;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center;
+}
+
+.hero-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--c-container) 0%, rgba(18, 33, 49, 0.6) 45%, transparent 100%);
+}
+
+.hero-baseline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--c-error);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.05em;
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.meta {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.meta-icon {
+  width: 2rem;
+  height: 2rem;
+  margin-top: 0.125rem;
+  border-radius: 9999px;
+  background: var(--c-container-highest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ---------- Perforation ---------- */
+.perforation {
+  position: relative;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  background: var(--c-container);
+}
+
+.perforation-line {
+  flex: 1;
+  margin: 0 1.5rem;
+  border-top: 2px dashed rgba(68, 71, 76, 0.8);
+}
+
+/* Same color as the page so they look like punched holes */
+.notch {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  background: var(--c-surface);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.notch-left { left: -1rem; }
+.notch-right { right: -1rem; }
+
+/* ---------- Stub ---------- */
+.ticket-id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pill-valid { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+.pill-valid .dot { background: #4ade80; }
+.pill-invalid { background: rgba(255, 180, 171, 0.12); color: var(--c-error); }
+.pill-invalid .dot { background: var(--c-error); }
+.pill-pending { background: rgba(245, 194, 107, 0.12); color: var(--c-warning); }
+.pill-pending .dot { background: var(--c-warning); }
+
+.dot-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+@keyframes pulse {
+  50% { opacity: 0.4; }
+}
+
+.barcode-box {
+  width: 100%;
+  max-width: 24rem;
+  padding: 0.75rem 1rem 0.5rem;
+  border-radius: 0.75rem;
+  background: var(--c-inverse-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.barcode-number {
+  margin-top: 0.375rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: #243145;
+}

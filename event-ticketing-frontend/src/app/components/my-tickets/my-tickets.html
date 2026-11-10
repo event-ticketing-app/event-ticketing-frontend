@@ -1,31 +1,262 @@
-<div class="p-6">
-  <mat-form-field appearance="outline" class="mb-4">
-    <mat-label>Filter by status</mat-label>
-    <mat-select [(ngModel)]="selectedStatus">
-      <mat-option [value]="null">All</mat-option>
-      @for (option of statusOptions; track option.value) {
-        <mat-option [value]="option.value">{{ option.label }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+<div class="tickets-page">
+  <div class="max-w-[1440px] mx-auto px-4 lg:px-8 py-6">
+    <div class="relative w-full">
+      <!-- Atmospheric backdrop -->
+      <div class="glow glow-red"></div>
+      <div class="glow glow-teal"></div>
 
-  <div class="events-grid">
-    @for (ticket of filteredTickets; track ticket.id) {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>{{ ticket.eventName }}</mat-card-title>
-          <mat-card-subtitle>{{ ticket.eventDate | date:'dd/MM/yyyy' }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <p>{{ ticket.eventDescription }}</p>
-          <p>{{ ticket.price }}€</p>
-          <p>Status: <span class="inline-flex px-2.5 py-0.5 rounded-full border text-xs font-semibold" [class]="statusClasses(ticket.status)">{{ getStatusLabel(ticket.status) }}</span></p>
-          <button mat-raised-button color="primary" [routerLink]="['/tickets', ticket.id]">View ticket</button>
-          @if(canCancel(ticket.status)) {
-            <button mat-raised-button color="warn" (click)="cancel(ticket.id, ticket.eventName)">Cancel</button>
-          }
-        </mat-card-content>
-      </mat-card>
+      <!-- Header -->
+      <div class="relative z-10 pt-4 pb-6 flex flex-col gap-6">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div class="max-w-2xl">
+            <div class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-c-container-high text-c-tertiary mb-2 shadow-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-c-tertiary animate-pulse"></span>
+              <span class="label-sm uppercase tracking-wider">Your Wallet • Linked to your account</span>
+            </div>
+            <h1 class="display text-c-on-surface">My Tickets</h1>
+            <p class="body-lg text-c-on-surface-variant mt-1">
+              All your reservations and purchased passes in one place. Open a ticket to show it at the entrance.
+            </p>
+          </div>
+
+          <!-- Mini ledger -->
+          <div class="flex items-center gap-4 p-2 rounded-xl bg-c-container-low shadow-sm self-start md:self-auto">
+            <div class="flex flex-col px-2">
+              <span class="label-sm text-c-outline uppercase tracking-wider">Total</span>
+              <span class="code-num text-c-on-surface font-semibold">{{ loading() ? '—' : tickets().length }}</span>
+            </div>
+            <div class="w-px h-8 bg-c-variant"></div>
+            <div class="flex flex-col px-2">
+              <span class="label-sm text-c-outline uppercase tracking-wider">Upcoming</span>
+              <span class="code-num text-c-tertiary font-semibold">{{ loading() ? '—' : upcomingCount() }}</span>
+            </div>
+            <div class="w-px h-8 bg-c-variant"></div>
+            <div class="flex flex-col px-2">
+              <span class="label-sm text-c-outline uppercase tracking-wider">Showing</span>
+              <span class="code-num text-c-on-surface font-semibold">{{ loading() ? '—' : filteredTickets().length }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter panel -->
+        <div class="bg-c-container-low p-4 lg:p-6 rounded-xl shadow-md flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="flex items-center gap-2 flex-wrap" role="tablist" aria-label="Filter by status">
+            @for (tab of statusTabs; track tab.label) {
+              <button
+                type="button"
+                role="tab"
+                class="status-tab"
+                [class.status-tab-active]="selectedStatus() === tab.value"
+                [attr.aria-selected]="selectedStatus() === tab.value"
+                (click)="selectedStatus.set(tab.value)"
+              >
+                <span>{{ tab.label }}</span>
+                <span class="tab-count code-num">{{ loading() ? '—' : countFor(tab.value) }}</span>
+              </button>
+            }
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <div class="relative">
+              <select class="filter-select" [value]="sortBy()" (change)="onSortChange($any($event.target).value)" aria-label="Sort by">
+                @for (option of sortOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+              <mat-icon class="select-icon">swap_vert</mat-icon>
+            </div>
+
+            @if (hasActiveFilters()) {
+              <button type="button" class="clear-button" (click)="clearFilters()">
+                <mat-icon class="icon-16">close</mat-icon>
+                <span>Clear</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        @if (actionError()) {
+          <p class="error-banner" role="alert">
+            <mat-icon class="icon-18">error</mat-icon>
+            <span>{{ actionError() }}</span>
+          </p>
+        }
+      </div>
+    </div>
+
+    @if (loading()) {
+      <!-- Loading skeletons -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        @for (i of [1, 2, 3]; track i) {
+          <div class="rounded-xl bg-c-container-low overflow-hidden shadow-md animate-pulse">
+            <div class="h-48 bg-c-container-highest"></div>
+            <div class="p-6 flex flex-col gap-3">
+              <div class="h-3 w-1/3 rounded bg-c-container-high"></div>
+              <div class="h-5 w-2/3 rounded bg-c-container-high"></div>
+              <div class="h-4 w-full rounded bg-c-container-high"></div>
+              <div class="h-11 w-full rounded-lg bg-c-container-high mt-2"></div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (loadError()) {
+      <div class="empty-state">
+        <div class="empty-icon"><mat-icon>cloud_off</mat-icon></div>
+        <h3 class="headline-sm text-c-on-surface mb-1">We couldn't load your tickets</h3>
+        <p class="body-md text-c-on-surface-variant max-w-md">Please check your connection and try again in a moment.</p>
+      </div>
+    } @else if (tickets().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon"><mat-icon>confirmation_number</mat-icon></div>
+        <h3 class="headline-sm text-c-on-surface mb-1">No tickets yet</h3>
+        <p class="body-md text-c-on-surface-variant max-w-md mb-6">
+          When you reserve or buy a ticket it will appear here. Find your next live experience.
+        </p>
+        <a [routerLink]="['/events']" class="primary-button px-6 py-2.5">
+          <mat-icon class="icon-18">explore</mat-icon>
+          <span>Explore Events</span>
+        </a>
+      </div>
+    } @else if (filteredTickets().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon"><mat-icon>search_off</mat-icon></div>
+        <h3 class="headline-sm text-c-on-surface mb-1">No tickets match</h3>
+        <p class="body-md text-c-on-surface-variant max-w-md mb-6">
+          None of your tickets match the selected status or search. Try another filter.
+        </p>
+        <button type="button" class="primary-button px-6 py-2.5" (click)="clearFilters()">
+          <mat-icon class="icon-18">restart_alt</mat-icon>
+          <span>Reset Filters</span>
+        </button>
+      </div>
+    } @else {
+      <!-- Ticket cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        @for (ticket of filteredTickets(); track ticket.id) {
+          <article
+            class="ticket-card group flex flex-col rounded-xl bg-c-container-low shadow-md"
+            [class.ticket-card-inactive]="ticket.status === TicketStatus.Cancelled"
+          >
+            <!-- Image -->
+            <div class="relative w-full h-48 overflow-hidden image-placeholder rounded-t-xl">
+              <mat-icon class="placeholder-icon">confirmation_number</mat-icon>
+              @if (ticket.imageUrl) {
+                <img
+                  [src]="ticket.imageUrl | eventImage: 'card'"
+                  [alt]="ticket.eventName"
+                  loading="lazy"
+                  class="card-image relative w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  (error)="onImageError($event)"
+                />
+              }
+              <div class="absolute inset-0 card-image-fade"></div>
+
+              <!-- Status pill -->
+              @switch (ticket.status) {
+                @case (TicketStatus.Purchased) {
+                  <div class="status-pill status-purchased">
+                    <span class="w-2 h-2 rounded-full bg-current"></span>
+                    <span class="label-sm uppercase font-semibold">Purchased</span>
+                  </div>
+                }
+                @case (TicketStatus.Reserved) {
+                  <div class="status-pill status-reserved">
+                    <span class="w-2 h-2 rounded-full bg-current animate-pulse"></span>
+                    <span class="label-sm uppercase font-semibold">Reserved</span>
+                  </div>
+                }
+                @default {
+                  <div class="status-pill status-cancelled">
+                    <span class="w-2 h-2 rounded-full bg-current"></span>
+                    <span class="label-sm uppercase font-semibold">{{ statusLabel(ticket.status) }}</span>
+                  </div>
+                }
+              }
+
+              <!-- Price pill -->
+              <div class="price-pill">
+                <span class="code-num font-bold">{{ ticket.price === 0 ? 'Free' : '€' + ticket.price.toFixed(2) }}</span>
+              </div>
+            </div>
+
+            <!-- Body -->
+            <div class="flex flex-col flex-1 p-6 pb-4 gap-1">
+              <div class="flex items-center gap-1 text-c-outline body-sm">
+                <mat-icon class="icon-16 text-c-tertiary">calendar_today</mat-icon>
+                <span>{{ ticket.eventDate | date: 'EEE, MMM dd, yyyy • h:mm a' }}</span>
+                @if (isPast(ticket) && ticket.status !== TicketStatus.Cancelled) {
+                  <span class="past-tag label-sm">Past</span>
+                }
+              </div>
+              <h3 class="headline-sm card-title mt-0.5">{{ ticket.eventName }}</h3>
+              <p class="body-md text-c-on-surface-variant line-clamp-2 mt-1">{{ ticket.eventDescription }}</p>
+            </div>
+
+            <!-- Perforation -->
+            <div class="perforation">
+              <span class="notch notch-left"></span>
+              <span class="perforation-line"></span>
+              <span class="notch notch-right"></span>
+            </div>
+
+            <!-- Stub -->
+            <div class="flex flex-col gap-4 px-6 pt-3 pb-6">
+              <div class="flex items-center justify-between gap-2 body-sm">
+                <div class="flex flex-col min-w-0">
+                  <span class="label-sm uppercase text-c-outline tracking-wider">Ticket ID</span>
+                  <span class="code-num text-c-tertiary font-semibold">#{{ ticket.id }}</span>
+                </div>
+                <div class="flex flex-col items-end min-w-0 text-right">
+                  <span class="label-sm uppercase text-c-outline tracking-wider">
+                    {{ ticket.status === TicketStatus.Reserved ? 'Reserved on' : 'Purchased on' }}
+                  </span>
+                  <span class="code-num text-c-on-surface">{{ ticket.purchaseAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <a
+                  [routerLink]="['/tickets', ticket.id]"
+                  class="group/btn flex-1 py-3 px-4"
+                  [class.primary-button]="ticket.status === TicketStatus.Purchased"
+                  [class.secondary-button]="ticket.status !== TicketStatus.Purchased"
+                >
+                  <span>View Ticket</span>
+                  <mat-icon class="icon-20 transition-transform group-hover/btn:translate-x-1">arrow_forward</mat-icon>
+                </a>
+                @if (canCancel(ticket.status)) {
+                  <button
+                    type="button"
+                    class="danger-button py-3 px-4"
+                    [disabled]="cancellingId() === ticket.id"
+                    (click)="cancel(ticket)"
+                  >
+                    <mat-icon class="icon-18">close</mat-icon>
+                    <span>{{ cancellingId() === ticket.id ? 'Cancelling...' : 'Cancel' }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+          </article>
+        }
+      </div>
     }
+
+    <!-- Info strip -->
+    <div class="p-6 rounded-xl bg-c-container-low shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-c-tertiary-container flex items-center justify-center text-c-tertiary flex-shrink-0">
+          <mat-icon class="icon-28">info</mat-icon>
+        </div>
+        <div>
+          <h4 class="title text-c-on-surface">Reserved tickets expire after 10 minutes</h4>
+          <p class="body-sm text-c-on-surface-variant">If a reservation isn't purchased in time it is released. Only reserved tickets can be cancelled.</p>
+        </div>
+      </div>
+      <a [routerLink]="['/events']" class="trust-chip no-underline">
+        <mat-icon class="icon-16 text-c-tertiary">explore</mat-icon>
+        <span>Explore Events</span>
+      </a>
+    </div>
   </div>
 </div>

@@ -1,43 +1,140 @@
 @if (ticket) {
-  <div style="display: flex; justify-content: center; padding: 40px 16px;">
-    <div style="max-width: 800px; width: 80vw; background: #f9fafb; border-radius: 12px; border: 0.5px solid #e5e7eb; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden;">      
-      <img [src]="ticket.imageUrl" alt="{{ ticket.eventName }}" style="width: 100%; height: 180px; object-fit: cover;" />
+  <div class="ticket-page">
+    <div class="relative w-full overflow-hidden px-4 lg:px-8 py-10">
+      <!-- Ambient glow -->
+      <div class="glow glow-main"></div>
+      <div class="glow glow-left"></div>
+      <div class="glow glow-right"></div>
 
-      <div style="background: #dc2626; padding: 24px; color: white;">
-        <p style="margin: 0; font-size: 11px; letter-spacing: 2px; opacity: 0.8;">EVENT TICKET</p>
-        <p style="margin: 8px 0 0; font-size: 24px; font-weight: 500;">{{ ticket.eventName }}</p>
-        <p style="margin: 4px 0 0; font-size: 13px; opacity: 0.8;">{{ ticket.eventDescription }}</p>
-      </div>
+      <div class="relative w-full max-w-[600px] mx-auto">
+        <article class="ticket-card">
+          <!-- TOP: hero image -->
+          <div class="hero">
+            <img [src]="ticket.imageUrl | eventImage: 'card'" [alt]="ticket.eventName" class="hero-image" />
+            <div class="hero-fade"></div>
 
-      <div style="padding: 20px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-          <div>
-            <p style="margin: 0; font-size: 11px; color: var(--text-muted); letter-spacing: 1px;">DATE</p>
-            <p style="margin: 4px 0 0; font-size: 14px; font-weight: 500; color: var(--text-primary);">{{ ticket.eventDate | date:'dd/MM/yyyy' }}</p>
+            <div class="absolute top-4 left-4 right-4 flex items-center justify-between gap-2">
+              <span class="badge bg-c-error-container text-c-on-error">
+                <mat-icon class="icon-15">local_fire_department</mat-icon>
+                <span class="label-sm uppercase font-semibold">Event</span>
+              </span>
+
+              @switch (ticket.status) {
+                @case (TicketStatus.Purchased) {
+                  <span class="badge bg-c-container-lowest text-c-tertiary">
+                    <span class="dot bg-c-tertiary"></span>
+                    <span class="label-sm uppercase font-bold">Purchased ✓</span>
+                  </span>
+                }
+                @case (TicketStatus.Cancelled) {
+                  <span class="badge bg-c-container-lowest text-c-error">
+                    <span class="dot bg-c-error"></span>
+                    <span class="label-sm uppercase font-bold">Cancelled</span>
+                  </span>
+                }
+                @default {
+                  <span class="badge bg-c-container-lowest text-c-warning">
+                    <span class="dot bg-c-warning"></span>
+                    <span class="label-sm uppercase font-bold">Reserved</span>
+                  </span>
+                }
+              }
+            </div>
+
+            <div class="hero-baseline"></div>
           </div>
-          <div style="text-align: right;">
-            <p style="margin: 0; font-size: 11px; color: var(--text-muted); letter-spacing: 1px;">PRICE</p>
-            <p style="margin: 4px 0 0; font-size: 14px; font-weight: 500; color: var(--text-primary);">{{ ticket.price }}€</p>
+
+          <!-- Ticket body -->
+          <div class="bg-c-container p-6 flex flex-col gap-4">
+            <div class="flex flex-col gap-1">
+              <h1 class="headline-lg text-c-on-surface break-anywhere">{{ ticket.eventName }}</h1>
+              <p class="body-md text-c-on-surface-variant break-anywhere">{{ ticket.eventDescription }}</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              <div class="meta">
+                <div class="meta-icon text-c-secondary"><mat-icon class="icon-18">calendar_month</mat-icon></div>
+                <div class="flex flex-col min-w-0">
+                  <span class="label-sm uppercase text-c-on-surface-variant">Date</span>
+                  <span class="title text-c-on-surface">{{ ticket.eventDate | date: 'EEE, dd MMM yyyy' }}</span>
+                  <span class="code-num text-c-secondary">{{ ticket.eventDate | date: 'HH:mm' }}</span>
+                </div>
+              </div>
+
+              <div class="meta">
+                <div class="meta-icon text-c-tertiary"><mat-icon class="icon-18">sell</mat-icon></div>
+                <div class="flex flex-col min-w-0">
+                  <span class="label-sm uppercase text-c-on-surface-variant">Price</span>
+                  <span class="title text-c-on-surface">{{ ticket.price }}€</span>
+                  <span class="label-sm text-c-on-surface-variant">Tax &amp; fees incl.</span>
+                </div>
+              </div>
+
+              <div class="meta">
+                <div class="meta-icon text-c-on-surface-variant"><mat-icon class="icon-18">receipt_long</mat-icon></div>
+                <div class="flex flex-col min-w-0">
+                  <span class="label-sm uppercase text-c-on-surface-variant">Transaction time</span>
+                  <span class="title text-c-on-surface">{{ ticket.purchaseAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+              </div>
+
+              <div class="meta">
+                <div class="meta-icon text-c-on-surface-variant"><mat-icon class="icon-18">person</mat-icon></div>
+                <div class="flex flex-col min-w-0">
+                  <span class="label-sm uppercase text-c-on-surface-variant">Ticket holder</span>
+                  <span class="title text-c-on-surface truncate">{{ ticket.username }}</span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div>
-          <p style="margin: 0; font-size: 11px; color: var(--text-muted); letter-spacing: 1px;">ATTENDEE</p>
-          <p style="margin: 4px 0 0; font-size: 14px; font-weight: 500; color: var(--text-primary);">{{ ticket.username }}</p>
-        </div>
+          <!-- Perforation line with punched holes -->
+          <div class="perforation">
+            <span class="notch notch-left"></span>
+            <span class="perforation-line"></span>
+            <span class="notch notch-right"></span>
+          </div>
+
+          <!-- BOTTOM: stub -->
+          <div class="bg-c-container-low p-6 flex flex-col items-center text-center">
+            <div class="w-full flex items-center justify-between gap-3 mb-4">
+              <div class="flex flex-col text-left min-w-0">
+                <span class="label-sm uppercase text-c-on-surface-variant tracking-widest">Ticket ID</span>
+                <span class="ticket-id text-c-tertiary">#{{ ticket.id }}</span>
+              </div>
+
+              @switch (ticket.status) {
+                @case (TicketStatus.Purchased) {
+                  <span class="pill pill-valid"><span class="dot dot-pulse"></span>Valid Pass</span>
+                }
+                @case (TicketStatus.Cancelled) {
+                  <span class="pill pill-invalid"><span class="dot"></span>Not valid</span>
+                }
+                @default {
+                  <span class="pill pill-pending"><span class="dot"></span>Pending payment</span>
+                }
+              }
+            </div>
+
+            <div class="barcode-box">
+              <svg
+                class="w-full h-10"
+                [attr.viewBox]="'0 0 ' + barcodeWidth + ' 40'"
+                preserveAspectRatio="none"
+                role="img"
+                aria-label="Ticket barcode"
+              >
+                @for (bar of barcodeBars; track $index) {
+                  <rect [attr.x]="bar.x" y="0" [attr.width]="bar.width" height="40" fill="#051424" />
+                }
+              </svg>
+              <span class="barcode-number">{{ barcodeNumber(ticket.id) }}</span>
+            </div>
+
+            <p class="title text-c-on-surface mt-4">Present this ticket at the entrance</p>
+          </div>
+        </article>
       </div>
-
-      <div style="border-top: 2px dashed #e5e7eb; margin: 0 20px;"></div>
-
-      <div style="padding: 20px;">
-        <div style="display: flex; justify-content: center; gap: 2px; margin-bottom: 12px;">
-          @for(bar of barcode; track $index) {
-            <div [style.width]="bar + 'px'" style="height: 48px; background: #1f2937;"></div>
-          }
-        </div>
-        <p style="text-align: center; font-size: 11px; color: #9ca3af; margin: 0; letter-spacing: 1px;">PURCHASED ✓</p>
-      </div>
-
     </div>
   </div>
 }
