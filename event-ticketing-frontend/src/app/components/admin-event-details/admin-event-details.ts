@@ -4,15 +4,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AdminEventResponse } from '../../services/admin-events';
 import { getEventStatusClasses, getEventStatusLabel } from '../../services/event-status';
+import { EventImagePipe } from '../../pipes/event-image.pipe';
 
 @Component({
   selector: 'app-admin-event-details',
-  imports: [DatePipe, MatButtonModule],
+  imports: [DatePipe, MatButtonModule, EventImagePipe],
   template: `
     <div class="p-6">
       <h2 class="text-xl font-bold text-gray-900 mb-4">Event Details</h2>
       @if (data.imageUrl) {
-        <img [src]="data.imageUrl" [alt]="data.name" class="w-full rounded-xl object-cover border border-gray-200 mb-4" />
+        <img [src]="data.imageUrl | eventImage: 'card'" [alt]="data.name" class="w-full rounded-xl object-cover border border-gray-200 mb-4" />
       } @else {
         <div class="w-full h-32 rounded-xl bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center text-sm text-gray-500 mb-4">
           No image

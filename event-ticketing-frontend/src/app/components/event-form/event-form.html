@@ -24,6 +24,11 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
+      <mat-label>Location</mat-label>
+      <input matInput [(ngModel)]="location" name="location" maxlength="200" placeholder="e.g. WiZink Center, Madrid" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
       <mat-label>Ticket Capacity</mat-label>
       <input matInput type="number" min="1" [(ngModel)]="ticketCapacity" name="ticketCapacity" required />
     </mat-form-field>

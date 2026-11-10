@@ -1,41 +1,339 @@
-@if (event) {
-  <div class="hero-banner" [style.background-image]="'url(' + event.imageUrl + ')'">
-    <img [src]="event.imageUrl" alt="{{ event.name }}" class="hero-image" />
-  </div>
+<div class="detail-page">
+  <div class="relative w-full overflow-hidden">
+    <!-- Ambient stage glow -->
+    <div class="glow glow-main"></div>
+    <div class="glow glow-left"></div>
+    <div class="glow glow-right"></div>
 
-  <div class="event-detail-container">
-    <h1>{{ event.name }}</h1>
-    <p>{{ event.description }}</p>
-    <p>{{ event.date | date:'dd/MM/yyyy' }}</p>
-    <p>{{ event.price }}€</p>
-
-    <div class="event-footer">
-      <span class="spots">{{ event.ticketCapacity }} spots available</span>
-      
-      @if (getRole() === 'Organizer' || getRole() === 'Admin') {
-        <button mat-raised-button [routerLink]="['/edit-event', event.id]">Edit event</button>
+    <div class="relative max-w-[1440px] mx-auto px-4 lg:px-8 pt-6 pb-20">
+      @if (loading()) {
+        <!-- Loading skeleton -->
+        <div class="animate-pulse">
+          <div class="h-5 w-64 rounded bg-c-container-high mb-6"></div>
+          <div class="w-full rounded-2xl bg-c-container-high hero-frame mb-10"></div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <div class="lg:col-span-8 h-64 rounded-2xl bg-c-container-low"></div>
+            <div class="lg:col-span-4 h-80 rounded-2xl bg-c-container-low"></div>
+          </div>
+        </div>
+      } @else if (notFound() || !event()) {
+        <div class="empty-state">
+          <div class="empty-icon"><mat-icon>event_busy</mat-icon></div>
+          <h1 class="headline-sm text-c-on-surface mb-1">Event not found</h1>
+          <p class="body-md text-c-on-surface-variant mb-6">This event doesn't exist or is no longer available.</p>
+          <a [routerLink]="['/events']" class="cta-button px-6 py-2.5">
+            <mat-icon class="icon-18">arrow_back</mat-icon>
+            <span>Back to events</span>
+          </a>
+        </div>
       } @else {
-        @if (!reservationSuccess) {
-          <button mat-raised-button color="primary" (click)="reserve()">Reserve ticket</button>
-        }
-        @if (reservationSuccess && !purchasedTicket) {
-          <button mat-raised-button color="accent" (click)="purchase()">Purchase ticket</button>
-        }
+        @let ev = event()!;
+
+        <!-- Breadcrumbs & utility bar -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-6">
+          <nav aria-label="Breadcrumb" class="flex items-center gap-2 label-md text-c-on-surface-variant min-w-0">
+            <a [routerLink]="['/events']" class="crumb-link">
+              <mat-icon class="icon-16 text-c-tertiary">explore</mat-icon>
+              <span>Explore Events</span>
+            </a>
+            <span class="text-c-outline-variant text-[12px]">/</span>
+            <span class="text-c-on-surface body-sm font-semibold truncate">{{ ev.name }} #EVT-{{ ev.id }}</span>
+          </nav>
+          <div class="flex items-center gap-2">
+            @if (shareMessage()) {
+              <span class="label-md text-c-tertiary" role="status">{{ shareMessage() }}</span>
+            }
+            <button type="button" class="chip-button" (click)="share()">
+              <mat-icon class="icon-16 text-c-secondary">share</mat-icon>
+              <span>Share</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hero cinematic banner card -->
+        <section class="hero-card group mb-10">
+          <div class="hero-frame" [class.image-placeholder]="!showImage(ev)">
+            @if (showImage(ev)) {
+              <img
+                [src]="ev.imageUrl | eventImage: 'banner'"
+                [alt]="ev.name"
+                class="hero-image"
+                (error)="onImageError()"
+              />
+            } @else {
+              <mat-icon class="placeholder-icon">confirmation_number</mat-icon>
+            }
+            <div class="absolute inset-0 hero-scrim-bottom"></div>
+            <div class="absolute inset-0 hero-scrim-sides"></div>
+
+            <!-- Top badges -->
+            <div class="absolute top-5 left-5 right-5 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="glass-pill text-c-tertiary label-sm uppercase">
+                  <span class="w-2 h-2 rounded-full bg-c-tertiary animate-pulse"></span>
+                  Official Event
+                </span>
+                <span class="glass-pill glass-pill-high text-c-on-surface label-sm">
+                  <mat-icon class="icon-14 text-c-secondary">verified</mat-icon>
+                  Approved by EventTicketing
+                </span>
+              </div>
+              <span class="date-pill code-num">
+                <mat-icon class="icon-15">schedule</mat-icon>
+                {{ ev.date | date: 'dd/MM/yyyy' }}
+              </span>
+            </div>
+
+            <!-- Bottom title strip -->
+            <div class="absolute bottom-6 left-6 right-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div class="space-y-1.5 max-w-3xl min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="id-pill code-num uppercase">ID: #EVT-{{ ev.id }}</span>
+                  @if (ev.location) {
+                    <span class="text-c-on-surface-variant label-sm uppercase tracking-wide inline-flex items-center gap-1">
+                      <mat-icon class="icon-14">location_on</mat-icon>{{ ev.location }}
+                    </span>
+                  }
+                </div>
+                <h1 class="display hero-title text-c-on-surface">{{ ev.name }}</h1>
+              </div>
+              <div class="hidden md:flex items-center gap-2 glass-box px-4 py-2 rounded-xl shrink-0">
+                <div class="text-right">
+                  <p class="label-sm text-c-on-surface-variant uppercase">General Admission</p>
+                  <p class="title text-c-tertiary">{{ ev.price === 0 ? 'Free' : '€' + ev.price.toFixed(2) }}</p>
+                </div>
+                <div class="w-9 h-9 rounded-lg bg-c-container flex items-center justify-center text-c-tertiary">
+                  <mat-icon class="icon-20">confirmation_number</mat-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2 columns: content + sticky checkout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <!-- LEFT -->
+          <div class="lg:col-span-8 flex flex-col gap-6 min-w-0">
+            <!-- Metric cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+              <div class="metric-card">
+                <div class="flex items-center justify-between">
+                  <span class="label-sm uppercase tracking-wider text-c-secondary">Date &amp; Time</span>
+                  <mat-icon class="icon-20 text-c-secondary">calendar_today</mat-icon>
+                </div>
+                <div>
+                  <p class="title text-c-on-surface">{{ ev.date | date: 'dd/MM/yyyy' }}</p>
+                  <p class="body-sm text-c-on-surface-variant">{{ ev.date | date: 'EEE · HH:mm' }}</p>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="flex items-center justify-between">
+                  <span class="label-sm uppercase tracking-wider text-c-tertiary">Access Pass</span>
+                  <mat-icon class="icon-20 text-c-tertiary">confirmation_number</mat-icon>
+                </div>
+                <div>
+                  <div class="flex items-baseline gap-1">
+                    <p class="headline-md text-c-on-surface">{{ ev.price === 0 ? 'Free' : '€' + ev.price.toFixed(2) }}</p>
+                    @if (ev.price !== 0) {
+                      <span class="label-sm text-c-on-surface-variant">/ ticket</span>
+                    }
+                  </div>
+                  <p class="body-sm text-c-tertiary code-num-font">General Admission</p>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="flex items-center justify-between">
+                  <span class="label-sm uppercase tracking-wider" [class.text-c-error]="isLowStock(ev) || isSoldOut(ev)" [class.text-c-secondary]="!isLowStock(ev) && !isSoldOut(ev)">Remaining</span>
+                  <mat-icon class="icon-20" [class.text-c-error]="isLowStock(ev) || isSoldOut(ev)" [class.text-c-secondary]="!isLowStock(ev) && !isSoldOut(ev)">groups</mat-icon>
+                </div>
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    @if (isLowStock(ev)) {
+                      <span class="w-2 h-2 rounded-full bg-c-error animate-ping"></span>
+                    }
+                    <p class="title" [class.text-c-error]="isLowStock(ev) || isSoldOut(ev)" [class.text-c-on-surface]="!isLowStock(ev) && !isSoldOut(ev)">
+                      {{ isSoldOut(ev) ? 'Sold out' : spotsLeft(ev) + (spotsLeft(ev) === 1 ? ' spot left' : ' spots left') }}
+                    </p>
+                  </div>
+                  <!-- Sold progress -->
+                  <div class="progress-track" role="progressbar" [attr.aria-valuenow]="soldPercent(ev)" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="soldPercent(ev) + '% sold'">
+                    <div class="progress-fill" [class.progress-fill-hot]="isLowStock(ev) || isSoldOut(ev)" [style.width.%]="soldPercent(ev)"></div>
+                  </div>
+                  <p class="label-sm text-c-on-surface-variant mt-1">{{ ev.ticketsSold }} of {{ ev.ticketCapacity }} taken</p>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="flex items-center justify-between">
+                  <span class="label-sm uppercase tracking-wider text-c-secondary">Location</span>
+                  <mat-icon class="icon-20 text-c-secondary">pin_drop</mat-icon>
+                </div>
+                <div class="min-w-0">
+                  <p class="title text-c-on-surface truncate" [title]="ev.location">{{ ev.location || 'To be announced' }}</p>
+                  @if (ev.location) {
+                    <a class="body-sm text-c-tertiary hover:underline" [href]="mapsLink(ev.location)" target="_blank" rel="noopener">Open in Maps</a>
+                  } @else {
+                    <p class="body-sm text-c-on-surface-variant">Venue not set yet</p>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- About -->
+            <div class="panel space-y-4">
+              <div class="flex items-center gap-2 pb-1">
+                <div class="w-2.5 h-6 rounded bg-c-tertiary"></div>
+                <h2 class="headline-md text-c-on-surface">About This Event</h2>
+              </div>
+              <p class="body-lg text-c-on-surface description">{{ ev.description }}</p>
+            </div>
+
+            <!-- Venue -->
+            @if (ev.location) {
+              <div class="panel space-y-4">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                  <div class="min-w-0">
+                    <h3 class="title text-c-on-surface flex items-center gap-2">
+                      <mat-icon class="icon-20 text-c-tertiary">map</mat-icon>
+                      Venue &amp; Location
+                    </h3>
+                    <p class="body-sm text-c-on-surface-variant mt-0.5">{{ ev.location }}</p>
+                  </div>
+                  <a class="inline-flex items-center gap-1 text-c-tertiary label-md hover:underline" [href]="mapsLink(ev.location)" target="_blank" rel="noopener">
+                    <span>Open in Maps</span>
+                    <mat-icon class="icon-14">open_in_new</mat-icon>
+                  </a>
+                </div>
+                @if (mapEmbedUrl(); as mapUrl) {
+                  <div class="relative w-full h-56 rounded-xl overflow-hidden map-frame">
+                    <iframe [src]="mapUrl" [title]="'Map of ' + ev.location" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <div class="absolute bottom-4 left-4 p-3 rounded-lg glass-box flex items-center gap-3 shadow-lg pointer-events-none">
+                      <div class="w-8 h-8 rounded-full bg-c-error-container text-c-on-error flex items-center justify-center">
+                        <mat-icon class="icon-18">location_on</mat-icon>
+                      </div>
+                      <p class="body-sm font-semibold text-c-on-surface max-w-[240px] truncate">{{ ev.location }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- RIGHT: sticky checkout -->
+          <div class="lg:col-span-4 lg:sticky lg:top-28 space-y-4">
+            <div class="checkout-card">
+              <div class="accent-rim"></div>
+
+              <!-- Urgency pill -->
+              @if (isSoldOut(ev)) {
+                <div class="urgency-pill bg-c-container-high text-c-outline">
+                  <span class="w-2 h-2 rounded-full bg-c-outline"></span>
+                  <span>Sold out</span>
+                </div>
+              } @else if (isLowStock(ev)) {
+                <div class="urgency-pill urgency-hot">
+                  <span class="w-2 h-2 rounded-full bg-c-error animate-ping"></span>
+                  <span>Only {{ spotsLeft(ev) }} {{ spotsLeft(ev) === 1 ? 'spot' : 'spots' }} remaining</span>
+                </div>
+              } @else {
+                <div class="urgency-pill bg-c-container-high text-c-tertiary">
+                  <span class="w-2 h-2 rounded-full bg-c-tertiary animate-pulse"></span>
+                  <span>{{ spotsLeft(ev) }} spots available</span>
+                </div>
+              }
+
+              <!-- Price -->
+              <div class="flex items-baseline gap-1.5 mb-2">
+                <span class="display text-c-on-surface leading-none">{{ ev.price === 0 ? 'Free' : '€' + ev.price.toFixed(2) }}</span>
+                @if (ev.price !== 0) {
+                  <span class="label-md text-c-on-surface-variant uppercase">/ ticket</span>
+                }
+              </div>
+              <p class="body-sm text-c-on-surface-variant mb-6">General Admission • Valid for {{ ev.date | date: 'dd/MM/yyyy' }} entry</p>
+
+              <!-- Breakdown -->
+              <div class="space-y-2 py-3 mb-5 body-sm text-c-on-surface-variant">
+                <div class="flex justify-between items-center">
+                  <span>Ticket price</span>
+                  <span class="text-c-on-surface code-num-font">€{{ ev.price.toFixed(2) }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span>Service fee</span>
+                  <span class="text-c-tertiary code-num-font">€0.00</span>
+                </div>
+                <div class="flex justify-between items-center pt-2 title text-c-on-surface">
+                  <span>Total</span>
+                  <span class="headline-sm code-num-font">€{{ ev.price.toFixed(2) }}</span>
+                </div>
+              </div>
+
+              <!-- Role-based actions -->
+              @if (canReserve()) {
+                @if (ticket(); as t) {
+                  <div class="success-box mb-4">
+                    <mat-icon class="icon-20 text-c-tertiary">check_circle</mat-icon>
+                    <div>
+                      <p class="title text-c-tertiary">Ticket reserved!</p>
+                      <p class="body-sm text-c-on-surface-variant">Complete the purchase before {{ t.expiresAt | date: 'HH:mm' }} or the reservation will expire.</p>
+                    </div>
+                  </div>
+                  <button type="button" class="cta-button w-full py-4 px-6 mb-5" [disabled]="busy()" (click)="purchase()">
+                    <mat-icon class="icon-20">shopping_cart_checkout</mat-icon>
+                    <span>{{ busy() ? 'Processing...' : 'Purchase Ticket' }}</span>
+                  </button>
+                } @else {
+                  <button type="button" class="cta-button w-full py-4 px-6 mb-5" [disabled]="busy() || isSoldOut(ev)" (click)="reserve()">
+                    <mat-icon class="icon-20">confirmation_number</mat-icon>
+                    <span>{{ isSoldOut(ev) ? 'Sold Out' : busy() ? 'Reserving...' : 'Reserve Ticket' }}</span>
+                    @if (!isSoldOut(ev) && !busy()) {
+                      <mat-icon class="icon-18 ml-1">arrow_forward</mat-icon>
+                    }
+                  </button>
+                  @if (getRole() === null) {
+                    <p class="body-sm text-c-outline text-center -mt-3 mb-5">You'll need to sign in to reserve.</p>
+                  }
+                }
+              } @else if (isAdmin() || isOwner(ev)) {
+                <div class="success-box mb-4">
+                  <mat-icon class="icon-24 text-c-tertiary shrink-0">verified_user</mat-icon>
+                  <div class="flex flex-col">
+                    <span class="title text-c-tertiary">{{ isAdmin() ? 'Administrator access' : 'You organize this event' }}</span>
+                    <span class="body-sm text-c-on-surface-variant">You can update the details of this listing.</span>
+                  </div>
+                </div>
+                <button type="button" class="secondary-button w-full py-4 px-6 mb-5" (click)="isAdmin() ? editAsAdmin() : editAsOrganizer()">
+                  <mat-icon class="icon-20">edit</mat-icon>
+                  <span>Edit Event</span>
+                </button>
+              } @else {
+                <p class="body-sm text-c-on-surface-variant text-center mb-5">Organizer accounts can't reserve tickets.</p>
+              }
+
+              @if (actionError()) {
+                <p class="error-text mb-4" role="alert">{{ actionError() }}</p>
+              }
+
+              <!-- Guarantees -->
+              <div class="space-y-2.5 pt-2">
+                <div class="flex items-center gap-2 text-c-on-surface-variant body-sm">
+                  <mat-icon class="icon-18 text-c-tertiary">check_circle</mat-icon>
+                  <span>No hidden fees at checkout</span>
+                </div>
+                <div class="flex items-center gap-2 text-c-on-surface-variant body-sm">
+                  <mat-icon class="icon-18 text-c-tertiary">bolt</mat-icon>
+                  <span>Instant ticket after purchase</span>
+                </div>
+                <div class="flex items-center gap-2 text-c-on-surface-variant body-sm">
+                  <mat-icon class="icon-18 text-c-tertiary">lock</mat-icon>
+                  <span>Linked directly to your account</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       }
     </div>
-
-    @if (reservationSuccess && !purchasedTicket) {
-      <p>Reservation success! You have 10 minutes to purchase the ticket.</p>
-    }
-
-    @if (purchasedTicket) {
-      <div class="purchased-ticket">
-        <h2>Ticket confirmed!</h2>
-        <p><strong>Event:</strong> {{ purchasedTicket.eventName }}</p>
-        <p><strong>Date:</strong> {{ purchasedTicket.eventDate | date:'dd/MM/yyyy' }}</p>
-        <p><strong>Price:</strong> {{ purchasedTicket.price }}€</p>
-        <p><strong>Purchased at:</strong> {{ purchasedTicket.purchaseAt | date:'dd/MM/yyyy HH:mm' }}</p>
-      </div>
-    }
   </div>
-}
+</div>

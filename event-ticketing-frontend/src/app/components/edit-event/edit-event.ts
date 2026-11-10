@@ -32,6 +32,7 @@ export class EditEvent implements OnInit {
   price: number = 0;
   imageUrl: string = '';
   ticketCapacity: number = 0;
+  location: string = '';
   uploading = false;
 
   ngOnInit() {
@@ -44,6 +45,7 @@ export class EditEvent implements OnInit {
       this.price = response.price;
       this.imageUrl = response.imageUrl;
       this.ticketCapacity = response.ticketCapacity;
+      this.location = response.location ?? '';
       this.cdr.detectChanges();
     });
   }
@@ -57,7 +59,8 @@ export class EditEvent implements OnInit {
       date: this.date,
       price: this.price,
       imageUrl: this.imageUrl,
-      ticketCapacity: this.ticketCapacity
+      ticketCapacity: this.ticketCapacity,
+      location: this.location
     }).subscribe(() => {
       this.router.navigate(['/organizer-events']);
     });

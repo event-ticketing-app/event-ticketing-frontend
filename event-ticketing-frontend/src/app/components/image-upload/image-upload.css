@@ -1,6 +1,8 @@
+/* Preview with the same 1920x600 shape the banner will have on the event page */
 .preview-img {
   width: 100%;
-  height: 250px !important;
+  height: auto !important;
+  aspect-ratio: 1920 / 600;
   object-fit: cover;
   display: block;
 }

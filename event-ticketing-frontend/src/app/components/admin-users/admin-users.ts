@@ -21,9 +21,7 @@ export class AdminUsers implements OnInit
 {
   users: AdminUserResponse[] = [];
     get filteredUsers() {
-      return this.users.filter(e => 
-        e.name.toLowerCase().includes(this.searchService.getSearchTerm().toLowerCase())
-      );
+      return this.users.filter(u => this.searchService.matches(u.name, u.email, u.role));
     }
     constructor(
       private adminService: AdminUsersService,

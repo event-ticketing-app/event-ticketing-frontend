@@ -24,6 +24,7 @@ export class CreateEvent {
   price: number = 0;
   imageUrl: string = '';
   ticketCapacity: number = 0;
+  location: string = '';
 
   uploading = false;
 
@@ -36,7 +37,8 @@ export class CreateEvent {
       date: this.date,
       price: this.price,
       imageUrl: this.imageUrl,
-      ticketCapacity: this.ticketCapacity
+      ticketCapacity: this.ticketCapacity,
+      location: this.location
     }).subscribe(response => {
       this.router.navigate(['/organizer-events']);
     });

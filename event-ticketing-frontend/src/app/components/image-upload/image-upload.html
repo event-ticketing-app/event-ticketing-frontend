@@ -1,9 +1,9 @@
 <div>
-  <p class="text-sm font-medium text-gray-700 mt-0 mb-2">Event image</p>
+  <p class="text-sm font-medium text-gray-700 mt-0 mb-2">Event banner</p>
 
   @if (imageUrl()) {
     <div class="relative rounded-xl overflow-hidden border border-gray-200">
-      <img [src]="imageUrl()" alt="Event image preview" class="preview-img" />
+      <img [src]="imageUrl()" alt="Event banner preview" class="preview-img" />
       <button
         type="button"
         (click)="removeImage()"
@@ -40,11 +40,16 @@
         <p class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-800 m-0">
           Only .webp images are accepted (max {{ maxSizeMb }} MB)
         </p>
-        <!-- Images are resized to 800x450 on Cloudinary, so this is the recommended resolution -->
-        <p class="text-xs text-gray-500 m-0">Recommended resolution: {{ recommendedSize }} (16:9)</p>
+        <!-- The banner is shown full width on the event page; the 800x450 card image is cut from it automatically -->
+        <p class="text-xs text-gray-500 m-0">Upload a <strong>banner of {{ recommendedSize }}</strong> (landscape).</p>
+        <p class="text-xs text-gray-400 m-0">The smaller 16:9 image for the event cards is created automatically.</p>
       }
     </label>
     <input [id]="inputId" type="file" accept=".webp,image/webp" class="hidden" (change)="onFileSelected($event)" />
+  }
+
+  @if (sizeWarning()) {
+    <p class="mt-2 mb-0 text-xs text-amber-700" role="status">{{ sizeWarning() }}</p>
   }
 
   @if (uploadError()) {

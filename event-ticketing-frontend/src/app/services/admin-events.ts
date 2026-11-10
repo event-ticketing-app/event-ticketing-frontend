@@ -13,6 +13,7 @@ export interface AdminEventResponse {
   organizerName: string;
   organizerEmail: string;
   status: number;
+  location: string;
 }
 
 @Injectable({

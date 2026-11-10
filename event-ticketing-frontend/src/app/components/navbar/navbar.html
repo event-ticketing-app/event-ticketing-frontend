@@ -34,6 +34,7 @@
   </div>
 
   <div class="flex-1 min-w-[170px] max-w-xl mx-1 sm:mx-3">
+    @if (showSearch()) {
     <div class="relative w-full">
       <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -45,10 +46,12 @@
         type="text"
         [(ngModel)]="searchTerm"
         (ngModelChange)="onSearch($event)"
-        placeholder="Search events..."
+        placeholder="Search..."
+        aria-label="Search"
         class="search-input"
       />
     </div>
+    }
   </div>
 
   <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">

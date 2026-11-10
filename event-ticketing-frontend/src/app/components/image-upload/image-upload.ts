@@ -1,6 +1,6 @@
 import { Component, OnDestroy, model, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { CloudinaryService, EVENT_IMAGE_HEIGHT, EVENT_IMAGE_WIDTH } from '../../services/cloudinary';
+import { CloudinaryService, EVENT_BANNER_HEIGHT, EVENT_BANNER_WIDTH } from '../../services/cloudinary';
 
 const MAX_IMAGE_SIZE_MB = 10;
 
@@ -18,12 +18,14 @@ export class ImageUpload implements OnDestroy {
   uploading = model<boolean>(false);
 
   readonly maxSizeMb = MAX_IMAGE_SIZE_MB;
-  readonly recommendedSize = `${EVENT_IMAGE_WIDTH}×${EVENT_IMAGE_HEIGHT} px`;
+  readonly recommendedSize = `${EVENT_BANNER_WIDTH}×${EVENT_BANNER_HEIGHT} px`;
   readonly inputId = `image-upload-${Math.random().toString(36).slice(2, 9)}`;
 
   isDragging = signal(false);
   uploadProgress = signal(0);
   uploadError = signal<string | null>(null);
+  /** Non-blocking notice when the image is not a 1920x600 banner (it will be cropped to fit). */
+  sizeWarning = signal<string | null>(null);
   private uploadSub?: Subscription;
 
   constructor(private cloudinary: CloudinaryService) {}
@@ -57,11 +59,33 @@ export class ImageUpload implements OnDestroy {
     this.uploading.set(false);
     this.uploadProgress.set(0);
     this.uploadError.set(null);
+    this.sizeWarning.set(null);
     this.imageUrl.set('');
+  }
+
+  /** Reads the image size in the browser and warns if it isn't a 1920x600 banner. */
+  private checkDimensions(file: File) {
+    const objectUrl = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const { naturalWidth: w, naturalHeight: h } = img;
+      const expectedRatio = EVENT_BANNER_WIDTH / EVENT_BANNER_HEIGHT;
+      const ratioOff = Math.abs(w / h - expectedRatio) / expectedRatio > 0.05;
+      if (w < EVENT_BANNER_WIDTH || ratioOff) {
+        this.sizeWarning.set(
+          `This image is ${w}×${h} px. Banners should be ${this.recommendedSize}, so it will be ` +
+            (ratioOff ? 'cropped to fit' : 'scaled up and may look blurry') + '.',
+        );
+      }
+      URL.revokeObjectURL(objectUrl);
+    };
+    img.onerror = () => URL.revokeObjectURL(objectUrl);
+    img.src = objectUrl;
   }
 
   private uploadFile(file: File) {
     this.uploadError.set(null);
+    this.sizeWarning.set(null);
 
     const isWebp = file.type === 'image/webp' || file.name.toLowerCase().endsWith('.webp');
     if (!isWebp) {
@@ -73,6 +97,7 @@ export class ImageUpload implements OnDestroy {
       return;
     }
 
+    this.checkDimensions(file);
     this.uploadSub?.unsubscribe();
     this.imageUrl.set('');
     this.uploading.set(true);

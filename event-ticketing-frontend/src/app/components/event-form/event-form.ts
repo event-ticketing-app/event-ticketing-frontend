@@ -26,6 +26,7 @@ export class EventForm implements OnInit {
   date: string = '';
   price: number = 0;
   ticketCapacity: number = 0;
+  location: string = '';
   imageUrl: string = '';
   organizerId: number = 0;
   uploading = false;
@@ -47,6 +48,7 @@ export class EventForm implements OnInit {
       this.date = this.event.date ?? '';
       this.price = this.event.price;
       this.ticketCapacity = this.event.ticketCapacity;
+      this.location = this.event.location ?? '';
       this.imageUrl = this.event.imageUrl ?? '';
     }
   }
@@ -59,6 +61,7 @@ export class EventForm implements OnInit {
       date: this.date,
       price: this.price,
       ticketCapacity: this.ticketCapacity,
+      location: this.location,
       imageUrl: this.imageUrl,
       organizerId: this.organizerId
     });

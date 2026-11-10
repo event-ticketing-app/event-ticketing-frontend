@@ -12,6 +12,10 @@ export interface EventResponse {
   ticketCapacity: number;
   imageUrl: string;
   status: number;
+  organizerId: number;
+  location: string;
+  /** Reserved + purchased tickets. Spots left = ticketCapacity - ticketsSold. */
+  ticketsSold: number;
 
 }
 export interface EventCreateRequest {
@@ -21,6 +25,7 @@ export interface EventCreateRequest {
   price: number;
   imageUrl: string;
   ticketCapacity: number;
+  location: string;
 
 }
 

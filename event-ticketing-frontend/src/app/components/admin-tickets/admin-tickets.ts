@@ -30,8 +30,7 @@ export class AdminTickets implements OnInit {
 
   get filteredTickets() {
     return this.tickets.filter(t =>
-      t.eventName.toLowerCase().includes(this.searchService.getSearchTerm().toLowerCase()) ||
-      t.userName.toLowerCase().includes(this.searchService.getSearchTerm().toLowerCase())
+      this.searchService.matches(t.eventName, t.userName, this.statusLabel(t.status))
     );
   }
 

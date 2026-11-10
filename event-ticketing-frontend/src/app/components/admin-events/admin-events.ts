@@ -28,7 +28,7 @@ export class AdminEvents implements OnInit {
 
   get filteredEvents() {
     return this.events.filter(e =>
-      e.name.toLowerCase().includes(this.searchService.getSearchTerm().toLowerCase())
+      this.searchService.matches(e.name, e.organizerName, e.description, this.statusLabel(e.status))
     );
   }
 
